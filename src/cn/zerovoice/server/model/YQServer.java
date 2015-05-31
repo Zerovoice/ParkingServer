@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
+import com.zeroapp.parking.message.ClientServerMessage;
 
 import cn.zerovoice.common.ActionMessage;
 import cn.zerovoice.common.ActionMessageType;
@@ -26,9 +27,22 @@ public class YQServer {
 				Socket socket=ss.accept();
 				//接受客户端发来的信息
 				ObjectInputStream ois=new ObjectInputStream(socket.getInputStream());
-				User u=(User) ois.readObject();
-				ActionMessage m=new ActionMessage();
+				ClientServerMessage mm= (ClientServerMessage) ois.readObject();
+				System.out.println("["+mm.toString()+"]");
+				System.out.println("["+mm.getMessageContent()+"]");
+				System.out.println("["+mm.getMessageType()+"]");
 				ObjectOutputStream oos=new ObjectOutputStream(socket.getOutputStream());
+				mm.setMessageContent("back");
+				oos.writeObject(mm);
+				oos.flush();
+				
+				
+				User u=(User) ois.readObject();
+				
+				
+				
+				
+				ActionMessage m=new ActionMessage();
 		        if(u.getOperation().equals("login")){ //登录
 		        	int account=u.getAccount();
 		        	System.out.println("["+u.getAccount()+"]u.getAccount()！");
