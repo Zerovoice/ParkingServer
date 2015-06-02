@@ -50,3 +50,4 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+#src/cn/zerovoice/server/view/LoginServlet.java
