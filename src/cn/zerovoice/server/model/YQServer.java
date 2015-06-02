@@ -1,17 +1,13 @@
 package cn.zerovoice.server.model;
+import cn.zerovoice.server.dao.Config;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.ref.SoftReference;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
-
-import cn.zerovoice.common.ActionMessage;
-import cn.zerovoice.common.ActionMessageType;
-import cn.zerovoice.common.User;
-import cn.zerovoice.server.dao.Config;
-import cn.zerovoice.server.dao.UserDao;
+import com.zeroapp.parking.message.ClientServerMessage;
 
 
 public class YQServer {
@@ -21,46 +17,58 @@ public class YQServer {
 		ServerSocket ss = null;
 		try {
 			ss=new ServerSocket(Config.HOST_PORT);
-			System.out.println("·þÎñÆ÷ÒÑÆô¶¯ in "+new Date());
+			System.out.println("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ in "+new Date());
 			while(true){
 				Socket socket=ss.accept();
-				//½ÓÊÜ¿Í»§¶Ë·¢À´µÄÐÅÏ¢
+				//ï¿½ï¿½ï¿½Ü¿Í»ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
 				ObjectInputStream ois=new ObjectInputStream(socket.getInputStream());
-				User u=(User) ois.readObject();
-				ActionMessage m=new ActionMessage();
+				ClientServerMessage mm= (ClientServerMessage) ois.readObject();
+				System.out.println("["+mm.toString()+"]");
+				System.out.println("["+mm.getMessageContent()+"]");
+				System.out.println("["+mm.getMessageType()+"]");
 				ObjectOutputStream oos=new ObjectOutputStream(socket.getOutputStream());
-		        if(u.getOperation().equals("login")){ //µÇÂ¼
-		        	int account=u.getAccount();
-		        	System.out.println("["+u.getAccount()+"]u.getAccount()£¡");
-		        	System.out.println("["+u.getPassword()+"]u.getPassword()£¡");
-		        	UserDao udao=new UserDao();
-		        	boolean b=udao.login(account, u.getPassword());//Á¬½ÓÊý¾Ý¿âÑéÖ¤ÓÃ»§
-					if(b){
-						System.out.println("["+account+"]ÉÏÏßÁË£¡");
-						//¸ü¸ÄÊý¾Ý¿âÓÃ»§×´Ì¬
-						udao.changeState(account, 1);
-						//µÃµ½¸öÈËÐÅÏ¢
-						String user=udao.getUser(account);
-						//·µ»ØÒ»¸ö³É¹¦µÇÂ½µÄÐÅÏ¢°ü£¬²¢¸½´ø¸öÈËÐÅÏ¢
-						m.setType(ActionMessageType.SUCCESS);
-						m.setContent(user);
-						oos.writeObject(m);
-						ServerConClientThread cct=new ServerConClientThread(socket);//µ¥¿ªÒ»¸öÏß³Ì£¬ÈÃ¸ÃÏß³ÌÓë¸Ã¿Í»§¶Ë±£³ÖÁ¬½Ó
-						ServerConClientManager.addClientThread(u.getAccount(),cct);
-						cct.start();//Æô¶¯Óë¸Ã¿Í»§¶ËÍ¨ÐÅµÄÏß³Ì
-						
-					}else{
-						m.setType(ActionMessageType.FAIL);
-						oos.writeObject(m);
-					}
-		        }else if(u.getOperation().equals("register")){
-		        	UserDao udao=new UserDao();
-		        	if(udao.register(u)){
-		        		//·µ»ØÒ»¸ö×¢²á³É¹¦µÄÐÅÏ¢°ü
-						m.setType(ActionMessageType.SUCCESS);
-						oos.writeObject(m);
-		        	}
-		        }
+				mm.setMessageContent("back");
+				oos.writeObject(mm);
+//				oos.flush();
+//				
+//				User u=(User) ois.readObject();
+//				
+//				
+//				
+//				
+//				ActionMessage m=new ActionMessage();
+//		        if(u.getOperation().equals("login")){ //ï¿½ï¿½Â¼
+//		        	int account=u.getAccount();
+//		        	System.out.println("["+u.getAccount()+"]u.getAccount()ï¿½ï¿½");
+//		        	System.out.println("["+u.getPassword()+"]u.getPassword()ï¿½ï¿½");
+//		        	UserDao udao=new UserDao();
+//		        	boolean b=udao.login(account, u.getPassword());//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½Ö¤ï¿½Ã»ï¿½
+//					if(b){
+//						System.out.println("["+account+"]ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½");
+//						//ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½Ã»ï¿½×´Ì¬
+//						udao.changeState(account, 1);
+//						//ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+//						String user=udao.getUser(account);
+//						//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+//						m.setType(ActionMessageType.SUCCESS);
+//						m.setContent(user);
+//						oos.writeObject(m);
+//						ServerConClientThread cct=new ServerConClientThread(socket);//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ß³Ì£ï¿½ï¿½Ã¸ï¿½ï¿½ß³ï¿½ï¿½ï¿½Ã¿Í»ï¿½ï¿½Ë±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//						ServerConClientManager.addClientThread(u.getAccount(),cct);
+//						cct.start();//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿Í»ï¿½ï¿½ï¿½Í¨ï¿½Åµï¿½ï¿½ß³ï¿½
+//						
+//					}else{
+//						m.setType(ActionMessageType.FAIL);
+//						oos.writeObject(m);
+//					}
+//		        }else if(u.getOperation().equals("register")){
+//		        	UserDao udao=new UserDao();
+//		        	if(udao.register(u)){
+//		        		//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½×¢ï¿½ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½
+//						m.setType(ActionMessageType.SUCCESS);
+//						oos.writeObject(m);
+//		        	}
+//		        }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +76,7 @@ public class YQServer {
 	}
 
 }
-/*Ïß³Ì³ØÊµÏÖ
+/*ï¿½ß³Ì³ï¿½Êµï¿½ï¿½
 ThreadPool.submit(new Runnable() {
 	public void run() {
 		while (true) {
@@ -83,16 +91,16 @@ ThreadPool.submit(new Runnable() {
 				ois = new ObjectInputStream(socket.getInputStream());
 				System.out.println("ois in " + ois);
 				m = (ActionMessage) ois.readObject();
-				// ¶Ô´Ó¿Í»§¶ËÈ¡µÃµÄÏûÏ¢½øÐÐÀàÐÍÅÐ¶Ï£¬×öÏàÓ¦µÄ´¦Àí
-				if (m.getType().equals(ActionMessageType.COM_MES)) {// Èç¹ûÊÇÆÕÍ¨ÏûÏ¢°ü
+				// ï¿½Ô´Ó¿Í»ï¿½ï¿½ï¿½È¡ï¿½Ãµï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï£ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ä´ï¿½ï¿½ï¿½
+				if (m.getType().equals(ActionMessageType.COM_MES)) {// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ï¢ï¿½ï¿½
 					DoWhatAndSendMes.sendMes(m);
-				} else if (m.getType().equals(ActionMessageType.GROUP_MES)) { // Èç¹ûÊÇÈºÏûÏ¢
+				} else if (m.getType().equals(ActionMessageType.GROUP_MES)) { // ï¿½ï¿½ï¿½ï¿½ï¿½Èºï¿½ï¿½Ï¢
 					DoWhatAndSendMes.sendGroupMes(m);
-				} else if (m.getType().equals(ActionMessageType.GET_ONLINE_FRIENDS)) {// Èç¹ûÊÇÇëÇóºÃÓÑÁÐ±í
+				} else if (m.getType().equals(ActionMessageType.GET_ONLINE_FRIENDS)) {// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
 					DoWhatAndSendMes.sendBuddyList(m);
-				} else if (m.getType().equals(ActionMessageType.DEL_BUDDY)) { // Èç¹ûÊÇÉ¾³ýºÃÓÑ
+				} else if (m.getType().equals(ActionMessageType.DEL_BUDDY)) { // ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 					DoWhatAndSendMes.delBuddy(m);
-				} else if (m.getType().equals(ActionMessageType.ADD_BUDDY)) { // Èç¹ûÊÇÉ¾³ýºÃÓÑ
+				} else if (m.getType().equals(ActionMessageType.ADD_BUDDY)) { // ï¿½ï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½
 					DoWhatAndSendMes.addBuddy(m);
 				} 
 			} catch (Exception e) {
