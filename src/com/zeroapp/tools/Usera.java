@@ -1,6 +1,6 @@
-package cn.zerovoice.common;
+package com.zeroapp.tools;
 
-public class User implements java.io.Serializable{
+public class Usera implements java.io.Serializable{
 	String operation;
 	int account;
 	String password;

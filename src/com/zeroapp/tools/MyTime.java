@@ -1,4 +1,4 @@
-package cn.zerovoice.common;
+package com.zeroapp.tools;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

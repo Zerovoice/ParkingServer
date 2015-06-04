@@ -1,4 +1,4 @@
-package cn.zerovoice.server.model;
+package com.zeroapp.parkingserver.model;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

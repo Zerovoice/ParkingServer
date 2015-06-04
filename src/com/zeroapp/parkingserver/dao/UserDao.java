@@ -1,11 +1,11 @@
-package cn.zerovoice.server.dao;
+package com.zeroapp.parkingserver.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.zeroapp.tools.Usera;
+import com.zeroapp.utils.Config;
 
-import cn.zerovoice.common.User;
-import cn.zerovoice.server.model.YQServer;
 
 
 public class UserDao {
@@ -26,7 +26,7 @@ public class UserDao {
 		return false;
 	}
 	
-	public boolean register(User u) {
+	public boolean register(Usera u) {
 		try {
 			String sql = "insert into Action_user values(?,?,?,?,?,?,?,?,?,?,?)";
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -39,7 +39,7 @@ public class UserDao {
 			ps.setString(6, u.getSex());
 			ps.setInt(7, u.getAge());
 			ps.setInt(8, u.getLev());
-			ps.setInt(9, 0);  //ÉèÖÃÓÃ»§ÊÇ·ñÔÚÏß
+			ps.setInt(9, 0);  //ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
 			ps.setString(10, u.getTime());
 			ps.setInt(11, u.getTag());
 			int r = ps.executeUpdate();
@@ -70,7 +70,7 @@ public class UserDao {
 	
 	public boolean addBuddy(int sender, int receiver) {
 		try {
-			//TODO Ìí¼ÓºÃÓÑ
+			//TODO ï¿½ï¿½Óºï¿½ï¿½ï¿½
 			String sql = "insert into Action_Buddy values(null,?,?)";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -156,7 +156,7 @@ public class UserDao {
 			System.out.println("s length [" + s.length()
                     + "]");
 			String filename = filePath.substring(62);
-			String url = "http://"+Config.HOST_ADRESS+":8080/ActionServer/userdata/"+filename;
+            String url = "http://" + Config.HOST_ADRESS + ":8080/ActionServer/userdata/" + filename;
 			System.out.println("url is [" + url
                     + "]");
 			ps.setString(1, url);
