@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import com.zeroapp.parkingserver.common.User;
-import com.zeroapp.tools.Usera;
 import com.zeroapp.utils.Config;
 
 
@@ -28,22 +27,22 @@ public class UserDao {
         return 0;
 	}
 	
-	public boolean register(Usera u) {
+    public boolean register(User u) {
 		try {
 			String sql = "insert into Action_user values(?,?,?,?,?,?,?,?,?,?,?)";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, u.getAccount());
-			ps.setString(2, u.getPassword());
-			ps.setString(3, u.getNick());
-			ps.setString(4, u.getAvatar());
-			ps.setString(5, u.getTrends());
-			ps.setString(6, u.getSex());
-			ps.setInt(7, u.getAge());
-			ps.setInt(8, u.getLev());
-			ps.setInt(9, 0);  //�����û��Ƿ�����
-			ps.setString(10, u.getTime());
-			ps.setInt(11, u.getTag());
+//			ps.setInt(1, u.getAccount());
+//			ps.setString(2, u.getPassword());
+//			ps.setString(3, u.getNick());
+//			ps.setString(4, u.getAvatar());
+//			ps.setString(5, u.getTrends());
+//			ps.setString(6, u.getSex());
+//			ps.setInt(7, u.getAge());
+//			ps.setInt(8, u.getLev());
+//			ps.setInt(9, 0);  //�����û��Ƿ�����
+//			ps.setString(10, u.getTime());
+//			ps.setInt(11, u.getTag());
 			int r = ps.executeUpdate();
 			if (r > 0) {
 				return true;
