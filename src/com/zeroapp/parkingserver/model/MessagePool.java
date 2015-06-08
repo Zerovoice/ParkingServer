@@ -17,6 +17,7 @@ package com.zeroapp.parkingserver.model;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.zeroapp.parking.message.ClientServerMessage;
+import com.zeroapp.parkingserver.factory.Worker;
 import com.zeroapp.utils.Log;
 
 /**
@@ -37,7 +38,7 @@ public class MessagePool {
     }
 
     public void startLooping() {
-        new Thread(new Sender()).start();
+        new Thread(new Looper()).start();
 
     }
     public static void inlet(ClientServerMessage buffer) {
@@ -60,7 +61,7 @@ public class MessagePool {
         }
     }
 
-    public class Sender implements Runnable {
+    public class Looper implements Runnable {
 
         private boolean looping = true;
 
