@@ -3,27 +3,29 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.tools.Usera;
 import com.zeroapp.utils.Config;
 
 
 
 public class UserDao {
-	public boolean login(int account, String password) {
+
+    public int login(User u) {
 		try {
-			String sql = "select * from Action_user where USER_ACCOUNT=? and USER_PASSWORD=?";
+            String sql = "select * from user_info where Account=? and Password=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, account);
-			ps.setString(2, password);
+            ps.setString(1, u.getAccount());
+            ps.setString(2, u.getPassword());
 			ResultSet rs = ps.executeQuery();
 			if (rs != null && rs.next() == true) {
-				return true;
+                return 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+        return 0;
 	}
 	
 	public boolean register(Usera u) {
@@ -51,7 +53,8 @@ public class UserDao {
 		}
 		return false;
 	}
-	public boolean delBuddy(int myAccount,int dfAccount){
+
+    private boolean delBuddy(int myAccount, int dfAccount) {
 		try {
 			String sql = "delete  from Action_buddy where BUDDY_ACCOUNT=? and BUDDY_BUDDY=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -68,7 +71,7 @@ public class UserDao {
 		return false;
 	}
 	
-	public boolean addBuddy(int sender, int receiver) {
+    private boolean addBuddy(int sender, int receiver) {
 		try {
 			//TODO ��Ӻ���
 			String sql = "insert into Action_Buddy values(null,?,?)";
@@ -86,7 +89,7 @@ public class UserDao {
 		return false;
 	}
 	
-	public String getBuddy(int account){
+    private String getBuddy(int account) {
 		String myFriends="";
 		try {
 			String sql = "select * from Action_buddy where BUDDY_ACCOUNT="+account;
@@ -110,17 +113,21 @@ public class UserDao {
 		}
 		return myFriends;
 	}
-	public String getUser(int account){
+
+    public String getUser(String account) {
 		String res="";
 		try {
-			String sql = "select * from Action_user where USER_ACCOUNT="+account;
+//            String sql = "select * from user_info where Account=" + account;
+            String sql = "select * from user_info where Account=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, account);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
-				res=res+rs.getInt("USER_ACCOUNT")+"_"+rs.getString("USER_NICKNAME")+"_"
-						+rs.getString("USER_AVATAR")+"_"+rs.getString("USER_TREND")+"_"
-						+rs.getString("USER_SEX")+"_"+rs.getInt("USER_AGE")+"_"+rs.getInt("USER_LEV")+"_"+rs.getInt("USER_TAG");
+                res = res + rs.getString("Name") + "_"
+//						+rs.getString("USER_AVATAR")+"_"+rs.getString("USER_TREND")+"_"
+//						+rs.getString("USER_SEX")+"_"+rs.getInt("USER_AGE")+"_"+rs.getInt("USER_LEV")+"_"+rs.getInt("USER_TAG")
+                ;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,7 +152,7 @@ public class UserDao {
 		return false;
 	}
 	
-	public boolean updateAvatar(int account,String filePath){
+    private boolean updateAvatar(int account, String filePath) {
 		try {
 			String sql = "update Action_user set USER_AVATAR=? where USER_ACCOUNT=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -171,7 +178,7 @@ public class UserDao {
 		return false;
 	}
 	
-	public boolean updateTag(int account){
+    private boolean updateTag(int account) {
 		try {
 			int tag = 1;
 			String sql = "select USER_TAG from Action_user where USER_ACCOUNT="+account;
