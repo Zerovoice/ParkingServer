@@ -25,6 +25,7 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 
+import com.zeroapp.utils.Config;
 import com.zeroapp.utils.Log;
 
 
@@ -66,7 +67,7 @@ public class PostMan implements Runnable {
             });
             bootstrap.option(ChannelOption.SO_BACKLOG, 128);
             bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            ChannelFuture cfuture = bootstrap.bind(8080).sync();
+            ChannelFuture cfuture = bootstrap.bind(Config.HOST_PORT).sync();
             cfuture.channel().closeFuture().sync();
 
         } catch (InterruptedException e) {

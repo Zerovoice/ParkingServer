@@ -10,7 +10,19 @@ import com.zeroapp.utils.Config;
 
 public class UserDao {
 
-    public int login(User u) {
+    /**
+     * <p>
+     * Title: signIn.
+     * </p>
+     * <p>
+     * Description: 根据用户的账号密码是否匹配判断登录成功与否.
+     * </p>
+     * 
+     * @param u
+     * @return
+     */
+    public int signIn(User u) {
+
 		try {
             String sql = "select * from user_info where Account=? and Password=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -27,9 +39,20 @@ public class UserDao {
         return 0;
 	}
 	
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @param u
+     * @return
+     */
     public boolean register(User u) {
 		try {
-			String sql = "insert into Action_user values(?,?,?,?,?,?,?,?,?,?,?)";
+            String sql = "insert into user_info values(?,?,?,?,?,?,?,?,?,?,?)";// TODO
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 //			ps.setInt(1, u.getAccount());
@@ -53,6 +76,155 @@ public class UserDao {
 		return false;
 	}
 
+    /**
+     * <p>
+     * Title: getUserInfo.
+     * </p>
+     * <p>
+     * Description: 获取用户详情,组织成Jason.
+     * </p>
+     * 
+     * @param account
+     * @return
+     */
+    public String getUserInfo(String account) {// TODO
+        String res = "";
+        try {
+            String sql = "select * from user_info where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, account);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                res = res + rs.getString("Name") + "_"
+//                      +rs.getString("USER_AVATAR")+"_"+rs.getString("USER_TREND")+"_"
+//                      +rs.getString("USER_SEX")+"_"+rs.getInt("USER_AGE")+"_"+rs.getInt("USER_LEV")+"_"+rs.getInt("USER_TAG")
+                ;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    /**
+     * <p>
+     * Title: changepassWord.
+     * </p>
+     * <p>
+     * Description: 修改账号密码.
+     * </p>
+     * 
+     * @param account
+     * @param newPassword
+     * @return
+     */
+    public boolean changepassWord(String account, String newPassword) {
+        try {
+            String sql = "update user_info set Password=? where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setString(2, account);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean changePhoneNumber(String account, String newPhoneNumber) {
+        try {
+            String sql = "update user_info set PhoneNum=? where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newPhoneNumber);
+            ps.setString(2, account);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean changeName(String account, String newName) {
+        try {
+            String sql = "update user_info set Name=? where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newName);
+            ps.setString(2, account);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean changeIdentityNumber(String account, String newIdentityNumber) {
+        try {
+            String sql = "update user_info set IdentityNum=? where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newIdentityNumber);
+            ps.setString(2, account);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean changeSex(String account, String sex) {
+        try {
+            String sql = "update user_info set Sex=? where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            if (sex.equals("男")) {// TODO
+                ps.setInt(1, 1);
+            } else {
+                ps.setInt(1, 0);
+            }
+            ps.setString(2, account);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean changeAccountBalance(String account, String newBanlance) {
+        try {
+            String sql = "update user_info set AccountBalance=? where Account=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, newBanlance);
+            ps.setString(2, account);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private boolean delBuddy(int myAccount, int dfAccount) {
 		try {
 			String sql = "delete  from Action_buddy where BUDDY_ACCOUNT=? and BUDDY_BUDDY=?";
@@ -69,6 +241,7 @@ public class UserDao {
 		}
 		return false;
 	}
+
 	
     private boolean addBuddy(int sender, int receiver) {
 		try {
@@ -113,43 +286,8 @@ public class UserDao {
 		return myFriends;
 	}
 
-    public String getUser(String account) {
-		String res="";
-		try {
-//            String sql = "select * from user_info where Account=" + account;
-            String sql = "select * from user_info where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, account);
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
-                res = res + rs.getString("Name") + "_"
-//						+rs.getString("USER_AVATAR")+"_"+rs.getString("USER_TREND")+"_"
-//						+rs.getString("USER_SEX")+"_"+rs.getInt("USER_AGE")+"_"+rs.getInt("USER_LEV")+"_"+rs.getInt("USER_TAG")
-                ;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return res;
-	}
 	
-	public boolean changeState(int account,int state){
-		try {
-			String sql = "update Action_user set USER_ISONLINE=? where USER_ACCOUNT=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, state);
-			ps.setInt(2, account);
-			int r = ps.executeUpdate();
-			if (r > 0) {
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+
 	
     private boolean updateAvatar(int account, String filePath) {
 		try {

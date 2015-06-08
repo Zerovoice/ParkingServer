@@ -81,11 +81,11 @@ public class Worker {
     private static void signIn(ClientServerMessage m) {
         UserDao ud = new UserDao();
         User u = ContentToObj.getUser(m.getMessageContent());
-        int result = ud.login(u);
+        int result = ud.signIn(u);
         Log.i("back-->Result: " + result);
         m.setMessageResult(result);
         if (result == 1) {
-            String content = ud.getUser(u.getAccount());
+            String content = ud.getUserInfo(u.getAccount());
             m.setMessageContent(content);
             Log.i("back-->Content: " + content);
         }
