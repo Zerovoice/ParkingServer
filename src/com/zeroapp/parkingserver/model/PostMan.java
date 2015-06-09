@@ -41,9 +41,7 @@ public class PostMan implements Runnable {
 
     private MessageBox mBox = null;
 
-    public PostMan(MessageBox box) {
-        this.mBox = box;
-
+    public PostMan() {
     }
 
     @Override
@@ -51,7 +49,7 @@ public class PostMan implements Runnable {
         Log.i("");
         ServerBootstrap bootstrap = new ServerBootstrap();
         EventLoopGroup bossGroup = new NioEventLoopGroup(1); // (1)
-        EventLoopGroup workerGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(1000);
         try {
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.channel(NioServerSocketChannel.class);
@@ -60,7 +58,7 @@ public class PostMan implements Runnable {
 
                 @Override
                 protected void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new ObjectEncoder(), new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)), mBox);
+                    ch.pipeline().addLast(new ObjectEncoder(), new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)), new MessageBox());
                     Log.i("successfully.");
                 }
 

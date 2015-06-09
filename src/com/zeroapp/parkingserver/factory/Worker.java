@@ -17,7 +17,7 @@ import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.parkingserver.dao.UserDao;
-import com.zeroapp.parkingserver.model.ParkingServer;
+import com.zeroapp.parkingserver.model.MessageBox;
 import com.zeroapp.utils.Log;
 
 
@@ -36,10 +36,13 @@ import com.zeroapp.utils.Log;
 
 public class Worker {
 
-    public Worker() {
+    private MessageBox mBox = null;
+
+    public Worker(MessageBox box) {
+        mBox = box;
     }
 
-    public static void deal(ClientServerMessage m) {
+    public void deal(ClientServerMessage m) {
         if (m == null || m.getMessageType() == -1) {
             return;
         }
@@ -78,9 +81,11 @@ public class Worker {
      * </p>
      * 
      */
-    private static void signIn(ClientServerMessage m) {
+    private void signIn(ClientServerMessage m) {
         UserDao ud = new UserDao();
         User u = ContentToObj.getUser(m.getMessageContent());
+        Log.i(u.getAccount());
+        Log.i(u.getPassword());
         int result = ud.signIn(u);
         Log.i("back-->Result: " + result);
         m.setMessageResult(result);
@@ -89,7 +94,7 @@ public class Worker {
             m.setMessageContent(content);
             Log.i("back-->Content: " + content);
         }
-        ParkingServer.getServer().getBox().sendMessage(m);
+        mBox.sendMessage(m);
     }
 
     /**

@@ -38,6 +38,7 @@ public class MessageBox extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext mctx;
 
     public MessageBox() {
+        new MessagePool(MessageBox.this).startLooping();
     }
 
     public void sendMessage(ClientServerMessage m) {

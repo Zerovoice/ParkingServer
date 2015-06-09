@@ -117,4 +117,21 @@ public class CarDao {
         return false;
     }
 
+    public boolean vote(String carNum, String BiddingID) {
+        try {
+            String sql = "update car_info set BiddingID=? where CarNum=?";
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, BiddingID);
+            ps.setString(2, carNum);
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

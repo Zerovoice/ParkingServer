@@ -13,6 +13,11 @@
 
 package com.zeroapp.parkingserver.factory;
 
+import com.google.gson.Gson;
+
+import com.zeroapp.parkingserver.common.Bidding;
+import com.zeroapp.parkingserver.common.Business;
+import com.zeroapp.parkingserver.common.CarInfo;
 import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.utils.Log;
 
@@ -40,12 +45,30 @@ public class ContentToObj {
      */
     public static User getUser(String messageContent) {
         Log.i("messageContent: " + messageContent);
-        User u = new User();
+        User u = new Gson().fromJson(messageContent, User.class);
         // TODO test code
-        u.setAccount("zxb");
-        u.setPassword("123");
+//        u.setAccount("zxb");
+//        u.setPassword("123");
         // test code
         return u;
+    }
+
+    public static Business getBusiness(String messageContent) {
+        Log.i("messageContent: " + messageContent);
+        Business b = new Gson().fromJson(messageContent, Business.class);
+        return b;
+    }
+
+    public static CarInfo getCarInfo(String messageContent) {
+        Log.i("messageContent: " + messageContent);
+        CarInfo o = new Gson().fromJson(messageContent, CarInfo.class);
+        return o;
+    }
+
+    public static Bidding getBidding(String messageContent) {
+        Log.i("messageContent: " + messageContent);
+        Bidding o = new Gson().fromJson(messageContent, Bidding.class);
+        return o;
     }
 
 }

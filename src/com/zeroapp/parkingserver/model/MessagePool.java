@@ -32,9 +32,12 @@ public class MessagePool {
 
     private static final boolean DEBUG = false;
     private static LinkedBlockingQueue<ClientServerMessage> messageQueue = new LinkedBlockingQueue<ClientServerMessage>();
+    private MessageBox box = null;
+    private Worker worker = null;
 
-    public MessagePool() {
-
+    public MessagePool(MessageBox messageBox) {
+        box = messageBox;
+        worker = new Worker(box);
     }
 
     public void startLooping() {
@@ -71,7 +74,7 @@ public class MessagePool {
                 ClientServerMessage m = MessagePool.outlet();
 //                Log.i("" + m);
                 if (m != null) {
-                    Worker.deal(m);
+                    worker.deal(m);
                 }else{
                 }
             }

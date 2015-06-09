@@ -19,17 +19,7 @@ public class ParkingServer {
     }
 
     private void bind() {
-        mBox = new MessageBox();
-        PostMan man = new PostMan(mBox);
+        PostMan man = new PostMan();
         new Thread(man).start();
-        new MessagePool().startLooping();
-    }
-
-    public MessageBox getBox() {
-        return mBox;
-    }
-
-    public void setBox(MessageBox box) {
-        this.mBox = box;
     }
 }

@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zeroapp.parkingserver.common.Bidding;
 
 /**
  * <p>
@@ -61,6 +62,32 @@ public class BiddingDao {
             e.printStackTrace();
         }
         return res;
+    }
+
+    public boolean bid(Bidding b) {
+        try {
+            String sql = "insert into bidding values(?,?,?,?,?,?,?,?,?,?,?)";// TODO
+            Connection conn = DBUtil.getDBUtil().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+//          ps.setInt(1, u.getAccount());
+//          ps.setString(2, u.getPassword());
+//          ps.setString(3, u.getNick());
+//          ps.setString(4, u.getAvatar());
+//          ps.setString(5, u.getTrends());
+//          ps.setString(6, u.getSex());
+//          ps.setInt(7, u.getAge());
+//          ps.setInt(8, u.getLev());
+//          ps.setInt(9, 0);  //�����û��Ƿ�����
+//          ps.setString(10, u.getTime());
+//          ps.setInt(11, u.getTag());
+            int r = ps.executeUpdate();
+            if (r > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }
