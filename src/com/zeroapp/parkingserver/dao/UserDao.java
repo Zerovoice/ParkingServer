@@ -50,30 +50,27 @@ public class UserDao {
      * @param u
      * @return
      */
-    public boolean register(User u) {
+    public int signUp(User u) {
 		try {
-            String sql = "insert into user_info values(?,?,?,?,?,?,?,?,?,?,?)";// TODO
-			Connection conn = DBUtil.getDBUtil().getConnection();
+		    String sql = "insert into user_info(Account,Password,Name,IdentityNum,Sex,PhoneNum,UserType,AccountBanlance) values(?,?,?,?,?,?,?,?)";// TODO
+		    Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-//			ps.setInt(1, u.getAccount());
-//			ps.setString(2, u.getPassword());
-//			ps.setString(3, u.getNick());
-//			ps.setString(4, u.getAvatar());
-//			ps.setString(5, u.getTrends());
-//			ps.setString(6, u.getSex());
-//			ps.setInt(7, u.getAge());
-//			ps.setInt(8, u.getLev());
-//			ps.setInt(9, 0);  //�����û��Ƿ�����
-//			ps.setString(10, u.getTime());
-//			ps.setInt(11, u.getTag());
+            ps.setString(1, u.getAccount());
+            ps.setString(2, u.getPassword());
+            ps.setString(3, u.getName());
+            ps.setString(4, u.getIdentityNum());
+            ps.setInt(5, u.getSex());
+            ps.setString(6, u.getPhoneNum());
+            ps.setString(7, u.getUserType());
+            ps.setInt(8, u.getAccountBanlance());
 			int r = ps.executeUpdate();
 			if (r > 0) {
-				return true;
+                return 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+        return 0;
 	}
 
     /**
@@ -87,8 +84,8 @@ public class UserDao {
      * @param account
      * @return
      */
-    public String getUserInfo(String account) {// TODO
-        String res = "";
+    public User getUserInfo(String account) {// TODO
+        User res = new User();
         try {
             String sql = "select * from user_info where Account=?";
             Connection conn = DBUtil.getDBUtil().getConnection();
@@ -96,7 +93,11 @@ public class UserDao {
             ps.setString(1, account);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                res = res + rs.getString("Name") + "_"
+                res.setAccount(account);
+                res.setName(rs.getString("Name"));
+                res.setIdentityNum(rs.getString("IdentityNum"));
+                res.setPhoneNum(rs.getString("PhoneNum"));
+//                res = res + rs.getString("Name") + "_"
 //                      +rs.getString("USER_AVATAR")+"_"+rs.getString("USER_TREND")+"_"
 //                      +rs.getString("USER_SEX")+"_"+rs.getInt("USER_AGE")+"_"+rs.getInt("USER_LEV")+"_"+rs.getInt("USER_TAG")
                 ;
@@ -341,5 +342,4 @@ public class UserDao {
 		return false;
 	}
 
-	
 }

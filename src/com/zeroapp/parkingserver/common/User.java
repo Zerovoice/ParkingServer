@@ -51,7 +51,7 @@ public class User {
     /**
      * 用户性别:0-女;1-男;其他-未知;
      */
-    private int sex = -1;
+    private int sex = 1;
     /**
      * 用户电话号码,注册时提供
      */
@@ -62,6 +62,11 @@ public class User {
      * |之后表示用户在该类型的等级,预留
      */
     private String userType = "";
+
+    /**
+     * 用户账户余额
+     */
+    private int accountBanlance = 0;
 
     /**
      * <p>
@@ -293,6 +298,35 @@ public class User {
      */
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @return the accountBanlance.
+     */
+    public int getAccountBanlance() {
+        return accountBanlance;
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @param accountBanlance
+     *            the accountBanlance to set.
+     */
+    public void setAccountBanlance(int accountBanlance) {
+        this.accountBanlance = accountBanlance;
     }
 
 }

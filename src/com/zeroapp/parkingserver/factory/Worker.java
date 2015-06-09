@@ -90,7 +90,8 @@ public class Worker {
         Log.i("back-->Result: " + result);
         m.setMessageResult(result);
         if (result == 1) {
-            String content = ud.getUserInfo(u.getAccount());
+            u = ud.getUserInfo(u.getAccount());
+            String content = ObjToContent.getContent(u);
             m.setMessageContent(content);
             Log.i("back-->Content: " + content);
         }
@@ -107,8 +108,13 @@ public class Worker {
      * 
      * @param m
      */
-    private static void signup(ClientServerMessage m) {
-        // TODO Auto-generated method stub
+    private void signup(ClientServerMessage m) {
+        UserDao ud = new UserDao();
+        User u = ContentToObj.getUser(m.getMessageContent());
+        int result = ud.signUp(u);
+        Log.i("back-->Result: " + result);
+        m.setMessageResult(result);
+        mBox.sendMessage(m);
 
     }
 
