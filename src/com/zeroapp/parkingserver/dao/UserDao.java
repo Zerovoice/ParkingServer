@@ -38,22 +38,12 @@ public class UserDao {
 		}
         return 0;
 	}
-	
-    /**
-     * <p>
-     * Title: TODO.
-     * </p>
-     * <p>
-     * Description: TODO.
-     * </p>
-     * 
-     * @param u
-     * @return
-     */
+
     public int signUp(User u) {
 		try {
-		    String sql = "insert into user_info(Account,Password,Name,IdentityNum,Sex,PhoneNum,UserType,AccountBanlance) values(?,?,?,?,?,?,?,?)";// TODO
-		    Connection conn = DBUtil.getDBUtil().getConnection();
+//            String sql = "insert into user_info(Account,Password,Name,IdentityNum,Sex,PhoneNum,UserType,AccountBanlance) values(?,?,?,?,?,?,?,?)";
+            String sql = "insert into user_info values(null,?,?,?,?,?,?,?,?)";
+            Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, u.getAccount());
             ps.setString(2, u.getPassword());
@@ -78,13 +68,13 @@ public class UserDao {
      * Title: getUserInfo.
      * </p>
      * <p>
-     * Description: 获取用户详情,组织成Jason.
+     * Description: 获取用户详情,组织成User对象.
      * </p>
      * 
      * @param account
      * @return
      */
-    public User getUserInfo(String account) {// TODO
+    public User getUserInfo(String account) {
         User res = new User();
         try {
             String sql = "select * from user_info where Account=?";
@@ -93,14 +83,15 @@ public class UserDao {
             ps.setString(1, account);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                res.setUserID(rs.getInt("UserID"));
                 res.setAccount(account);
+                res.setPassword(rs.getString("Password"));
                 res.setName(rs.getString("Name"));
                 res.setIdentityNum(rs.getString("IdentityNum"));
+                res.setSex(rs.getInt("Sex"));
                 res.setPhoneNum(rs.getString("PhoneNum"));
-//                res = res + rs.getString("Name") + "_"
-//                      +rs.getString("USER_AVATAR")+"_"+rs.getString("USER_TREND")+"_"
-//                      +rs.getString("USER_SEX")+"_"+rs.getInt("USER_AGE")+"_"+rs.getInt("USER_LEV")+"_"+rs.getInt("USER_TAG")
-                ;
+                res.setUserType(rs.getString("UserType"));
+                res.setAccountBanlance(rs.getInt("AccountBanlance"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -246,7 +237,6 @@ public class UserDao {
 	
     private boolean addBuddy(int sender, int receiver) {
 		try {
-			//TODO ��Ӻ���
 			String sql = "insert into Action_Buddy values(null,?,?)";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);

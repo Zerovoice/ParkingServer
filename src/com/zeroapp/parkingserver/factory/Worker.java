@@ -114,6 +114,12 @@ public class Worker {
         int result = ud.signUp(u);
         Log.i("back-->Result: " + result);
         m.setMessageResult(result);
+        if (result == 1) {
+            u = ud.getUserInfo(u.getAccount());
+            String content = ObjToContent.getContent(u);
+            m.setMessageContent(content);
+            Log.i("back-->Content: " + content);
+        }
         mBox.sendMessage(m);
 
     }
