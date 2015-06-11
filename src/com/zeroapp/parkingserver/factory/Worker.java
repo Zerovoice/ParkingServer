@@ -59,7 +59,7 @@ public class Worker {
                 signup(m);
                 break;
             case MessageConst.MessageType.MSG_TYPE_USER_LIST_MONEY:
-                // TODO
+                listParingRecord(m);
                 break;
             case MessageConst.MessageType.MSG_TYPE_USER_LIST_BIDDING:
                 listBiddings(m);
@@ -171,19 +171,42 @@ public class Worker {
      * @param m
      */
     private void listBiddings(ClientServerMessage m) {
-        CarDao d = new CarDao();
-        User u = ContentToObj.getUser(m.getMessageContent());
-        List<CarInfo> cars = d.getCars(u.getUserID());
-
-        if (cars != null) {
+        if (m.getMessageContent().equals("qingdao")) {
             Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_SUCCESS);
             m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
-            String content = ObjToContent.getContent(cars);
-            m.setMessageContent(content);
-            Log.i("back-->Content: " + content);
-        } else {
-            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_FAIL);
-            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+        }
+
+//        CarDao d = new CarDao();
+//        User u = ContentToObj.getUser(m.getMessageContent());
+//        List<CarInfo> cars = d.getCars(u.getUserID());
+//
+//        if (cars != null) {
+//            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+//            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+//            String content = ObjToContent.getContent(cars);
+//            m.setMessageContent(content);
+//            Log.i("back-->Content: " + content);
+//        } else {
+//            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_FAIL);
+//            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+//        }
+        mBox.sendMessage(m);
+
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     */
+    private void listParingRecord(ClientServerMessage m) {
+        if (m.getMessageContent().equals("money")) {
+            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
         }
         mBox.sendMessage(m);
 
