@@ -18,6 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import com.zeroapp.parking.message.ClientServerMessage;
+import com.zeroapp.parkingserver.factory.Worker;
 import com.zeroapp.utils.Log;
 
 /**
@@ -38,7 +39,7 @@ public class MessageBox extends ChannelInboundHandlerAdapter {
     private ChannelHandlerContext mctx;
 
     public MessageBox() {
-        new MessagePool(MessageBox.this).startLooping();
+//        new MessagePool(MessageBox.this).startLooping();
     }
 
     public void sendMessage(ClientServerMessage m) {
@@ -59,7 +60,8 @@ public class MessageBox extends ChannelInboundHandlerAdapter {
         if (msg != null) {
             ClientServerMessage m = (ClientServerMessage) msg;
             Log.i("" + m.getMessageContent());
-            MessagePool.inlet(m);
+            Worker w = new Worker(MessageBox.this);
+            w.deal(m);
         } else {
             Log.w("null");
         }

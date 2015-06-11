@@ -48,8 +48,8 @@ public class PostMan implements Runnable {
     public void run() {
         Log.i("");
         ServerBootstrap bootstrap = new ServerBootstrap();
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1); // (1)
-        EventLoopGroup workerGroup = new NioEventLoopGroup(1000);
+        EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.channel(NioServerSocketChannel.class);
