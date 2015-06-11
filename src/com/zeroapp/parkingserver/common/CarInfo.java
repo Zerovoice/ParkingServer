@@ -32,10 +32,11 @@ public class CarInfo {
      * 用户ID
      */
     private int userID = -1;
+    private int biddingID = -1;
     /**
      * 该车当前的状态,分为两部分
-     * |之前标示该车是否可以抢广告;
-     * |之后标示该车是否可以收入Money;
+     * _之前标示该车是否可以抢广告;
+     * _之后标示该车是否可以收入Money;
      */
     private String carState = "";
 
@@ -95,6 +96,35 @@ public class CarInfo {
      */
     public void setUserID(int userID) {
         this.userID = userID;
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @return the biddingID.
+     */
+    public int getBiddingID() {
+        return biddingID;
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @param biddingID
+     *            the biddingID to set.
+     */
+    public void setBiddingID(int biddingID) {
+        this.biddingID = biddingID;
     }
 
     /**

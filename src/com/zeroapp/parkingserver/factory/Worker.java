@@ -13,9 +13,13 @@
 
 package com.zeroapp.parkingserver.factory;
 
+import java.util.List;
+
 import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
+import com.zeroapp.parkingserver.common.CarInfo;
 import com.zeroapp.parkingserver.common.User;
+import com.zeroapp.parkingserver.dao.CarDao;
 import com.zeroapp.parkingserver.dao.UserDao;
 import com.zeroapp.parkingserver.model.MessageBox;
 import com.zeroapp.utils.Log;
@@ -57,14 +61,17 @@ public class Worker {
             case MessageConst.MessageType.MSG_TYPE_USER_LIST_MONEY:
                 // TODO
                 break;
-            case MessageConst.MessageType.MSG_TYPE_USER_LIST_AD:
-                // TODO
+            case MessageConst.MessageType.MSG_TYPE_USER_LIST_BIDDING:
+                listBiddings(m);
                 break;
-            case MessageConst.MessageType.MSG_TYPE_USER_GET_AD:
+            case MessageConst.MessageType.MSG_TYPE_USER_SELECT_BIDDING:
                 // TODO
                 break;
             case MessageConst.MessageType.MSG_TYPE_USER_SEND_PARK_INFO:
                 // TODO
+                break;
+            case MessageConst.MessageType.MSG_TYPE_USER_LIST_MYCARS:
+                listCars(m);
                 break;
 
             default:
@@ -119,6 +126,64 @@ public class Worker {
             String content = ObjToContent.getContent(u);
             m.setMessageContent(content);
             Log.i("back-->Content: " + content);
+        }
+        mBox.sendMessage(m);
+
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @param m
+     */
+    private void listCars(ClientServerMessage m) {
+        CarDao d = new CarDao();
+        User u = ContentToObj.getUser(m.getMessageContent());
+        List<CarInfo> cars = d.getCars(u.getUserID());
+
+        if (cars != null) {
+            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+            String content = ObjToContent.getContent(cars);
+            m.setMessageContent(content);
+            Log.i("back-->Content: " + content);
+        } else {
+            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_FAIL);
+            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+        }
+        mBox.sendMessage(m);
+
+    }
+
+    /**
+     * <p>
+     * Title: TODO.
+     * </p>
+     * <p>
+     * Description: TODO.
+     * </p>
+     * 
+     * @param m
+     */
+    private void listBiddings(ClientServerMessage m) {
+        CarDao d = new CarDao();
+        User u = ContentToObj.getUser(m.getMessageContent());
+        List<CarInfo> cars = d.getCars(u.getUserID());
+
+        if (cars != null) {
+            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+            String content = ObjToContent.getContent(cars);
+            m.setMessageContent(content);
+            Log.i("back-->Content: " + content);
+        } else {
+            Log.i("back-->Result: " + MessageConst.MessageResult.MSG_RESULT_FAIL);
+            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
         }
         mBox.sendMessage(m);
 

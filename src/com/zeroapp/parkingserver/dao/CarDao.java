@@ -46,19 +46,25 @@ public class CarDao {
      * @param account
      * @return
      */
-    public List<String> getCars(String account) {
-        List<String> res = new ArrayList<>();
+    public List<CarInfo> getCars(int userID) {
+        List<CarInfo> res = new ArrayList<>();
         try {
             String sql = "select * from car_info where UserID=?";
             Connection conn = DBUtil.getDBUtil().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, account);
+            ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                res.add(rs.getString("CarNum"));
+                CarInfo car = new CarInfo();
+                car.setCarNum(rs.getString("CarNum"));
+                car.setUserID(userID);
+                car.setBiddingID(rs.getInt("BiddingID"));
+                car.setCarState(rs.getString("State"));
+                res.add(car);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
         return res;
     }

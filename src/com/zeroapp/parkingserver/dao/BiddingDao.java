@@ -46,7 +46,7 @@ public class BiddingDao {
      * @param time
      * @return
      */
-    public List<Integer> getAvailableBusiness(long time) {
+    public List<Integer> getAvailableBusiness(long time, String city) {
         List<Integer> res = new ArrayList<Integer>();
         try {
             String sql = "select * from bidding";
