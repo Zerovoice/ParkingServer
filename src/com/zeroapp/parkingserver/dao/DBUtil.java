@@ -10,7 +10,7 @@ public class DBUtil {
     public static final String DB_PORT = "3306";
     public static final String DB_NAME = "parking";
     public static String DB_ADMIN_NAME = "root";
-    public static String DB_ADMIN_PWD = "zero00!@#";
+    public static String DB_ADMIN_PWD = "zxdzxb";
 	private DBUtil(){
 	}
 	public synchronized static DBUtil getDBUtil(){

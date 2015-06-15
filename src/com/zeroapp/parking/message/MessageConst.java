@@ -30,6 +30,7 @@ public class MessageConst {
 
         public static final int MSG_RESULT_FAIL = 0;
         public static final int MSG_RESULT_SUCCESS = 1;
+        public static final String SQL_QUERY_FAILURE = "sqlexp";
     }
 
     public class MessageType {
@@ -65,7 +66,16 @@ public class MessageConst {
         public static final int MSG_TYPE_BLUETOOTH_TOAST = 15;
         public static final int MSG_TYPE_UI_SHOW_USER_INFO = 16;
 
-
     }
-
+    public class CAR_CONTANSTS{
+    	public static final int CAR_STATE_CAN_BID = 1;
+    	public static final int CAR_STATE_GET_MONEY = 2;
+    	public static final int CAR_STATE_BLACK_LIST= -1;
+    	
+    }
+    public class BIDDING_CONTANSTS{
+    	public static final String BIDDING_SUCCESSFUL = "suc";
+    	public static final String BIDDING_FAIL = "fail";
+    	
+    }
 }

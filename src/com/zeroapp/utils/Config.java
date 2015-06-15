@@ -3,7 +3,7 @@ package com.zeroapp.utils;
 public class Config {
 
     public static final String HOST_ADRESS = "10.1.11.53";
-    public static final int HOST_PORT = 8080;
+    public static final int HOST_PORT = 1234;
     public static final String UPDATE_ADRESS = "http://" + HOST_ADRESS + ":8080/myapp/actionupdate/";
     public static final String UPDATE_APKNAME = "Action.apk";
     public static final String UPDATE_VERJSON = "Action.txt";

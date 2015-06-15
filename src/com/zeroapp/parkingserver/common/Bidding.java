@@ -48,6 +48,8 @@ public class Bidding {
      * 广告商需要服务的终止时间
      */
     private String timeEnd = "0";
+    
+    private String area;
 
     /**
      * <p>
@@ -132,6 +134,14 @@ public class Bidding {
      * @param userID
      *            the userID to set.
      */
+    
+    public String getArea(){
+    	return area;
+    }
+    
+    public void setArea(String sArea){
+    	this.area = sArea;
+    }
     public void setUserID(int userID) {
         this.userID = userID;
     }

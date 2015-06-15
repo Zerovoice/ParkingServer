@@ -126,7 +126,10 @@ public class Worker {
             String content = ObjToContent.getContent(u);
             m.setMessageContent(content);
             Log.i("back-->Content: " + content);
-        }
+            m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+        }else {
+        	m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
         mBox.sendMessage(m);
 
     }

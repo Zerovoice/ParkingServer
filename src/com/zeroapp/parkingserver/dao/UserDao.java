@@ -2,7 +2,9 @@ package com.zeroapp.parkingserver.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.utils.Config;
 
@@ -41,6 +43,7 @@ public class UserDao {
 
     public int signUp(User u) {
 		try {
+			
 //            String sql = "insert into user_info(Account,Password,Name,IdentityNum,Sex,PhoneNum,UserType,AccountBanlance) values(?,?,?,?,?,?,?,?)";
             String sql = "insert into user_info values(null,?,?,?,?,?,?,?,?)";
             Connection conn = DBUtil.getDBUtil().getConnection();
@@ -331,5 +334,19 @@ public class UserDao {
 		}
 		return false;
 	}
-
+ public String isAccountExist(String accountname){
+	 String sql = "select account from parking.user_info where account=?";
+	 try {
+	 Connection conn= DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps=conn.prepareStatement(sql);
+		ps.setString(1, accountname);
+		ResultSet res = ps.executeQuery();
+		return res.getString(1);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return MessageConst.MessageResult.SQL_QUERY_FAILURE;
+	}
+	 
+ }
 }
