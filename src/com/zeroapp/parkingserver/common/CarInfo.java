@@ -50,6 +50,28 @@ public class CarInfo {
      * 
      * @return the carNum.
      */
+    private String parkingAreaString;
+    private String carTypeString;
+    private String carValueString;
+    
+    public String getParkingArea(){
+    	return parkingAreaString;
+    }
+    public void setParkingArea(String parkingA){
+    	this.parkingAreaString = parkingA;
+    }
+    public String getCarType(){
+    	return carTypeString;
+    }
+    public void setCarType(String carT){
+    	this.carTypeString = carT;
+    }
+    public String getCarValue(){
+    	return carValueString;
+    }
+    public void setCarValue(String carValue){
+    	this.carValueString = carValue;
+    }
     public String getCarNum() {
         return carNum;
     }

@@ -73,7 +73,8 @@ public class Worker {
             case MessageConst.MessageType.MSG_TYPE_USER_LIST_MYCARS:
                 listCars(m);
                 break;
-
+            case MessageConst.MessageType.MSG_TYPE_USER_ADD_CARS:
+            	addCars(m);
             default:
                 break;
         }
@@ -133,7 +134,15 @@ public class Worker {
         mBox.sendMessage(m);
 
     }
-
+    private void addCars(ClientServerMessage m){
+    	CarDao cd= new CarDao();
+    	if(cd.addCar(ContentToObj.getCarInfo(m.getMessageContent()))){
+    		m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+    	}else {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
+    	mBox.sendMessage(m);
+    }
     /**
      * <p>
      * Title: TODO.

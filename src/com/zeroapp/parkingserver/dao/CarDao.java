@@ -60,6 +60,9 @@ public class CarDao {
                 car.setUserID(userID);
                 car.setBiddingID(rs.getInt("BiddingID"));
                 car.setCarState(rs.getString("State"));
+                car.setCarState(rs.getString("type"));
+                car.setCarValue(rs.getString("carvalue"));
+                car.setParkingArea(rs.getString("parking_area"));
                 res.add(car);
             }
         } catch (Exception e) {
@@ -82,12 +85,14 @@ public class CarDao {
      */
     public boolean addCar(CarInfo car) {
         try {
-            String sql = "insert into car_info (carnum,userid) values(?,?)";// TODO
+            String sql = "insert into car_info (carnum,userid,type,carvalue,parking_area) values(?,?,?,?)";// TODO
             Connection conn = DBUtil.getDBUtil().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, car.getCarNum());
             ps.setInt(2,car.getUserID());
-
+            ps.setString(3,car.getCarType());
+            ps.setString(4, car.getCarValue());
+            ps.setString(5, car.getParkingArea());
             int r = ps.executeUpdate();
             if (r > 0) {
                 return true;

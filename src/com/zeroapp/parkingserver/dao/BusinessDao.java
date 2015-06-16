@@ -60,7 +60,6 @@ public class BusinessDao {
             while (rs.next()) {// TODO 数据类型需要修改
             	Bidding b = new Bidding();
             	b.setBusinessID(rs.getInt("businessid"));
-            	b.setArea(rs.getString("area"));
             	b.setUserID(userID);
             	resList.add(b);
             	}

@@ -94,10 +94,10 @@ public class BiddingDao {
 						businessTimeStart)
 				&& CalculateTimeUtils.isEndTimeBiggerThanStartTime(
 						userTimeStart, userTimeStart)) {
-			return MessageConst.BIDDING_CONTANSTS.BIDDING_FAIL;
+			return MessageConst.BIDDING_CONSTANSTS.BIDDING_FAIL;
 
 		} else {
-			return Long.toString((Integer.valueOf(unitEarning).intValue())
+			return Long.toString((Double.valueOf(unitEarning).intValue())
 					* (CalculateTimeUtils.getTimeDiff(userTimeStart,
 							userTimeEnd)));
 

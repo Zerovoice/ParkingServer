@@ -30,7 +30,9 @@ public class MessageConst {
 
         public static final int MSG_RESULT_FAIL = 0;
         public static final int MSG_RESULT_SUCCESS = 1;
-        public static final String SQL_QUERY_FAILURE = "sqlexp";
+        public static final String SQL_QUERY_FAILURE = "sqlfail";
+        public static final String SQL_QUERY_SUCCESS = "sqlsuc";
+        public static final String SQL_QUERY_EXCPTION = "sqlexp";
     }
 
     public class MessageType {
@@ -57,6 +59,7 @@ public class MessageConst {
         public static final int MSG_TYPE_USER_DROP_BIDDING = 3005;
         public static final int MSG_TYPE_USER_SEND_PARK_INFO = 3006;
         public static final int MSG_TYPE_USER_LIST_MYCARS = 3007;
+        public static final int MSG_TYPE_USER_ADD_CARS = 3008;
 
         // Message types sent from the BluetoothChatService Handler
         public static final int MSG_TYPE_BLUETOOTH_STATE_CHANGE = 11;
@@ -67,15 +70,20 @@ public class MessageConst {
         public static final int MSG_TYPE_UI_SHOW_USER_INFO = 16;
 
     }
-    public class CAR_CONTANSTS{
+    public class CAR_CONSTANSTS{
     	public static final int CAR_STATE_CAN_BID = 1;
     	public static final int CAR_STATE_GET_MONEY = 2;
     	public static final int CAR_STATE_BLACK_LIST= -1;
     	
     }
-    public class BIDDING_CONTANSTS{
+    public class BIDDING_CONSTANSTS{
     	public static final String BIDDING_SUCCESSFUL = "suc";
     	public static final String BIDDING_FAIL = "fail";
+    	
+    }
+    public class USER_CONSTANST{
+    	public static final String ALREADY_EXIST = "suc";
+    	public static final String NOT_EXIST = "fail";
     	
     }
 }

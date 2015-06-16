@@ -49,7 +49,6 @@ public class Bidding {
      */
     private String timeEnd = "0";
     
-    private String area;
 
     /**
      * <p>
@@ -135,13 +134,7 @@ public class Bidding {
      *            the userID to set.
      */
     
-    public String getArea(){
-    	return area;
-    }
     
-    public void setArea(String sArea){
-    	this.area = sArea;
-    }
     public void setUserID(int userID) {
         this.userID = userID;
     }
