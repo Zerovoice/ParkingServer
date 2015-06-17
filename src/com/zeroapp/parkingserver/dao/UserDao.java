@@ -351,7 +351,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return MessageConst.MessageResult.SQL_QUERY_EXCPTION;
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_STRING;
 		}
 
 	}
@@ -366,11 +366,11 @@ public class UserDao {
 			while (res.next()) {
 				return res.getString("accountbanlance");
 			}
-			return null;
+			return MessageConst.MessageResult.SQL_QUERY_FAILURE;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return MessageConst.MessageResult.SQL_QUERY_EXCPTION;
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_STRING;
 		}
 
 	}

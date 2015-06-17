@@ -30,9 +30,12 @@ public class MessageConst {
 
         public static final int MSG_RESULT_FAIL = 0;
         public static final int MSG_RESULT_SUCCESS = 1;
-        public static final String SQL_QUERY_FAILURE = "sqlfail";
-        public static final String SQL_QUERY_SUCCESS = "sqlsuc";
-        public static final String SQL_QUERY_EXCPTION = "sqlexp";
+        public static final int SQL_OPREATION_FAILURE_INT = -1;
+        public static final String SQL_QUERY_FAILURE="sqlexp";
+        public static final String MSG_RESULT_SUCCESS_STRING = "suc";
+        public static final String MSG_RESULT_FAIL_STRIGN = "fail";
+        public static final int SQL_OPREATION_EXCEPTION_INT = -2;
+        public static final String SQL_OPREATION_EXCEPTION_STRING = "sqlexp";
     }
 
     public class MessageType {

@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.tools.BmapPoint;
 
@@ -48,22 +49,20 @@ public class BusinessDao {
      * @param time
      * @return
      */
-    public List<Bidding> getAvailableBusinessForCarOwner(String areanname,int cityid,long time,int userID) {
+    public List<Bidding> getAvailableBusinessForCarOwner(int areaid,int userId) {
         List<Bidding> resList = new ArrayList<Bidding>();
         try {
-            String sql = "select * from business where area=?";
+            String sql = "select * from business where areaid=?";
             Connection conn = DBUtil.getDBUtil().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,areanname);
+            ps.setInt(1, areaid);
             ResultSet rs = ps.executeQuery();
-            if(rs.getString("area").equals(areanname)){
             while (rs.next()) {// TODO 数据类型需要修改
             	Bidding b = new Bidding();
             	b.setBusinessID(rs.getInt("businessid"));
-            	b.setUserID(userID);
+            	b.setUserID(userId);
             	resList.add(b);
             	}
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,25 +70,28 @@ public class BusinessDao {
     }
     
     public int createBusiness(String area,int maxuser,int maxtenderer,String cost,String earnings,String timestart,String timeend,int areaid ){
-    	String sql = "insert into business(Area,MaxUserCount,MaxTendererCount,Cost,Earnings,TimeStart,TimeEnd,areaid) values(?,?,?,?,?,?,?,?)";
+    	String sql = "insert into business(MaxUserCount,MaxTendererCount,Cost,Earnings,TimeStart,TimeEnd,areaid) values(?,?,?,?,?,?,?)";
     	try {
     	Connection conn = DBUtil.getDBUtil().getConnection();
     	PreparedStatement ps;
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, area);
-			ps.setInt(2,maxuser);
-			ps.setInt(3, maxtenderer);
-			ps.setString(4, cost);
-			ps.setString(5, earnings);
-			ps.setString(6, timestart);
-			ps.setString(7, timeend);
-			ps.setInt(8, areaid);
+			
+			ps.setInt(1,maxuser);
+			ps.setInt(2, maxtenderer);
+			ps.setString(3, cost);
+			ps.setString(4, earnings);
+			ps.setString(5, timestart);
+			ps.setString(6, timeend);
+			ps.setInt(7, areaid);
 			int rs = ps.executeUpdate();
-				return rs;
+			if(rs>0){
+				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+			}
+				return MessageConst.MessageResult.MSG_RESULT_FAIL;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return -1;
+			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
     }
     public int removeBusiness(int businessid){
@@ -98,11 +100,15 @@ public class BusinessDao {
     	Connection conn= DBUtil.getDBUtil().getConnection();
     	PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, businessid);
-			return ps.executeUpdate();
+			int rs = ps.executeUpdate();
+			if(rs>0){
+				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+			}
+				return MessageConst.MessageResult.MSG_RESULT_FAIL;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return -1;
+			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
     	
     	

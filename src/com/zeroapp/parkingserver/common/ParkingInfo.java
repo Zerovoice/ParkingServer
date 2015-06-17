@@ -56,7 +56,13 @@ public class ParkingInfo {
      * 该次停车记录的收入
      */
     private String money = "0";
-
+    private int businessId;
+    public void setBusinessId(int bsId){
+    	this.businessId = bsId;
+    }
+    public int getBusinessId(){
+    	return businessId;
+    }
     /**
      * <p>
      * Title: TODO.

@@ -3,31 +3,15 @@ package com.zeroapp.parkingserver.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Area;
+import com.zeroapp.tools.BmapPoint;
 
 
 public class AreaDao {
-    public int getCityId(String city) {
-
-		try {
-            String sql = "select id,name,countrycode,district from world.city where name=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, city);
-			ResultSet rs = ps.executeQuery();
-			if (rs != null) {
-				while(rs.next()){
-					System.out.println(rs.getInt("id"));
-					return rs.getInt("id");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        return 0;
-	}
     
     public ArrayList<Area> areaDetailsArrayList(int citycode){
     		ArrayList<Area> al = new ArrayList<Area>();
@@ -48,5 +32,44 @@ public class AreaDao {
 		}
     	return al;
     }
-	
+	public String getAreaName(int areaId){
+		String sql = "select area from parking.area_details where Id_p=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, areaId);
+			ResultSet res = ps.executeQuery();
+			if(res !=null){
+				while (res.next()) {
+					return res.getString("area");
+				}
+			}
+			return MessageConst.MessageResult.SQL_QUERY_FAILURE;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_QUERY_FAILURE;
+		}
+	}
+	public String getAreaCoordinates(int areaId,BmapPoint bp){
+			String sql = "select coordinates from parking.areas_details where Id_p=?";
+			try {     
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps;
+			ps = conn.prepareCall(sql);
+				ps.setInt(1, areaId);
+				ResultSet res = ps.executeQuery();
+				if(res!=null){
+					while(res.next()){
+					return res.getString("coordinates");
+					}
+				}
+					return MessageConst.MessageResult.MSG_RESULT_FAIL_STRIGN;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return MessageConst.MessageResult.SQL_QUERY_FAILURE;
+			}
+	}
 }
