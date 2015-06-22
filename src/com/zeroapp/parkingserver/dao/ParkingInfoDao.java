@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import com.zeroapp.parking.message.MessageConst;
+import com.zeroapp.tools.BmapPoint;
 
 public class ParkingInfoDao {
 	public int creatParkingInfo(String carNum, String longitude,
@@ -37,4 +38,5 @@ public class ParkingInfoDao {
 			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
 	}
+
 }

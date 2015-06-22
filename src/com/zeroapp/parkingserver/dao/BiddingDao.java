@@ -86,11 +86,10 @@ public class BiddingDao {
 		return false;
 	}
 
-	public String getBiddingProfit(String businessArea, String userArea,
-			String businessTimeStart, String businessTimeEnd,
+	public String getBiddingProfit(String businessTimeStart, String businessTimeEnd,
 			String userTimeStart, String userTimeEnd, String unitEarning) {
-		if ((!businessArea.equals(userArea))
-				&& CalculateTimeUtils.isEndTimeBiggerThanStartTime(userTimeEnd,
+			
+		if (CalculateTimeUtils.isEndTimeBiggerThanStartTime(userTimeEnd,
 						businessTimeStart)
 				&& CalculateTimeUtils.isEndTimeBiggerThanStartTime(
 						userTimeStart, userTimeStart)) {
@@ -103,5 +102,7 @@ public class BiddingDao {
 
 		}
 	}
+
+	
 
 }

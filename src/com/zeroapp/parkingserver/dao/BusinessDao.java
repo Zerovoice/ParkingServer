@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Bidding;
+import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.tools.BmapPoint;
 
 /**
@@ -110,7 +111,37 @@ public class BusinessDao {
 			e.printStackTrace();
 			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
-    	
-    	
     }
+	public Business getBusinessDetails(int businessid){
+		
+		String sql = "selecet * from  business where businessid=?";
+		try {
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1, businessid);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+					Business b = new Business();
+					b.setArea(res.getInt("area"));
+					b.setBusinessID(businessid);
+					b.setCost(res.getString("cost"));
+					b.setEarnings(res.getString("earnings"));
+					b.setMaxtendererCount(res.getInt("maxtendererCount"));
+					b.setMaxUserCount(res.getInt("MaxUserCount"));
+					b.setTimeEnd(res.getString("timeend"));
+					b.setTimeStart(res.getString("timestart"));
+					return b;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+	public String updateBusinessItems(int msgtype,String content){
+				return null;
+	}
 }
