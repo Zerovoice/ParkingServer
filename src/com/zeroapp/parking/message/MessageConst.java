@@ -63,6 +63,7 @@ public class MessageConst {
         public static final int MSG_TYPE_USER_SEND_PARK_INFO = 3006;
         public static final int MSG_TYPE_USER_LIST_MYCARS = 3007;
         public static final int MSG_TYPE_USER_ADD_CARS = 3008;
+        public static final int MSG_TYPE_USER_UPDATE_ADING = 3009;
 
         // Message types sent from the BluetoothChatService Handler
         public static final int MSG_TYPE_BLUETOOTH_STATE_CHANGE = 11;

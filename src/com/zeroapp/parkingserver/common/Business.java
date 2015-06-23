@@ -99,7 +99,7 @@ public class Business {
 	 * 
 	 * @return the area.
 	 */
-	public int getArea() {
+	public int getAreaId() {
 		return areaid;
 	}
 
@@ -114,7 +114,7 @@ public class Business {
 	 * @param area
 	 *            the area to set.
 	 */
-	public void setArea(int aId) {
+	public void setAreaId(int aId) {
 		this.areaid = aId;
 	}
 

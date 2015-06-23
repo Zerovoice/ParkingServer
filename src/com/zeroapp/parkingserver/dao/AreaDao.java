@@ -52,7 +52,7 @@ public class AreaDao {
 			return MessageConst.MessageResult.SQL_QUERY_FAILURE;
 		}
 	}
-	public String getAreaCoordinates(int areaId,BmapPoint bp){
+	public String getAreaCoordinates(int areaId){
 			String sql = "select coordinates from parking.areas_details where Id_p=?";
 			try {     
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -71,5 +71,29 @@ public class AreaDao {
 				e.printStackTrace();
 				return MessageConst.MessageResult.SQL_QUERY_FAILURE;
 			}
+	}
+	public Area getAreaDetails(int areaId){
+		String sql = "select * from parking.areas_details where Id_p=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps;
+		Area aa =  new Area();
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, areaId);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+				aa.setAreaId(res.getInt("Id_p"));
+				aa.setAreaName(res.getString("area"));
+				aa.setCityId(res.getInt("city"));
+				aa.setBmapPoints(res.getString("coordinates"));
+				}
+				return aa;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

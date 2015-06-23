@@ -16,6 +16,8 @@ package com.zeroapp.parkingserver.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,23 +88,78 @@ public class BiddingDao {
 		return false;
 	}
 
-	public String getBiddingProfit(String businessTimeStart, String businessTimeEnd,
-			String userTimeStart, String userTimeEnd, String unitEarning) {
-			
+	public double getBiddingProfit(String businessTimeStart,
+			String businessTimeEnd, String userTimeStart, String userTimeEnd,
+			String unitEarning) {
+
 		if (CalculateTimeUtils.isEndTimeBiggerThanStartTime(userTimeEnd,
-						businessTimeStart)
+				businessTimeStart)
 				&& CalculateTimeUtils.isEndTimeBiggerThanStartTime(
 						userTimeStart, userTimeStart)) {
-			return MessageConst.BIDDING_CONSTANSTS.BIDDING_FAIL;
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
 
 		} else {
-			return Long.toString((Double.valueOf(unitEarning).intValue())
+			return (Double.valueOf(unitEarning).intValue())
 					* (CalculateTimeUtils.getTimeDiff(userTimeStart,
-							userTimeEnd)));
+							userTimeEnd));
 
 		}
 	}
 
-	
+	public ArrayList<Bidding> getUserBiddings(int userId) {
+		ArrayList<Bidding> biddingArrayList = new ArrayList<Bidding>();
+		String sql = "select * from parking.bidding where userid=?";
+		try {
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, userId);
+			ResultSet res = ps.executeQuery();
+			if (res != null) {
+				while (res.next()) {
+					Bidding bidding = new Bidding();
+					bidding.setBiddingID(res.getInt("biddingid"));
+					bidding.setUserID(userId);
+					bidding.setBusinessID(res.getInt("businessid"));
+					bidding.setTimeStart(res.getString("timestart"));
+					bidding.setTimeEnd(res.getString("timeend"));
+					biddingArrayList.add(bidding);
+				}
+				return biddingArrayList;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 
+	}
+	public ArrayList<Integer> getUserBusinessIdList(int userId){
+		ArrayList<Integer> businessIdArrayList = new ArrayList<Integer>();
+		ArrayList<Bidding> biddingArrayList = getUserBiddings(userId);
+		for(Bidding b:biddingArrayList){
+			 businessIdArrayList.add(b.getBusinessID());
+		}
+		return businessIdArrayList;
+	}
+	public int getBusinessIdFromBidding(int biddingid) {
+		String sql = "select businessid from parking.bidding where biddingid=?";
+		try {
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps;
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, biddingid);
+			ResultSet res = ps.executeQuery();
+			if (res != null) {
+				while (res.next()) {
+					return	res.getInt("businessid");
+				}
+			}
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
+
+	}
 }

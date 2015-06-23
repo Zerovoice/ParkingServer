@@ -20,6 +20,7 @@ import com.google.gson.JsonParser;
 import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CarInfo;
+import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.tools.BmapPoint;
 import com.zeroapp.utils.Log;
@@ -95,5 +96,8 @@ public class ContentToObj {
 			i++;
 		}
 		return bmapPoints;
+	}
+	public static ParkingInfo getParkingInfo(String clientM){
+		return new Gson().fromJson(clientM, ParkingInfo.class);
 	}
 }

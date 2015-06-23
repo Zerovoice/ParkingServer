@@ -13,15 +13,24 @@
 
 package com.zeroapp.parkingserver.factory;
 
+import java.awt.GradientPaint;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
+import com.zeroapp.parkingserver.common.Area;
 import com.zeroapp.parkingserver.common.CarInfo;
+import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.parkingserver.common.User;
+import com.zeroapp.parkingserver.dao.AreaDao;
+import com.zeroapp.parkingserver.dao.BiddingDao;
+import com.zeroapp.parkingserver.dao.BusinessDao;
 import com.zeroapp.parkingserver.dao.CarDao;
 import com.zeroapp.parkingserver.dao.UserDao;
 import com.zeroapp.parkingserver.model.MessageBox;
+import com.zeroapp.tools.BmapPoint;
+import com.zeroapp.tools.GraphTool;
 import com.zeroapp.utils.Log;
 
 /**
@@ -73,6 +82,8 @@ public class Worker {
 			break;
 		case MessageConst.MessageType.MSG_TYPE_USER_ADD_CARS:
 			addCars(m);
+		case MessageConst.MessageType.MSG_TYPE_USER_UPDATE_ADING:
+			isParkingInAvailableArea(m);
 		default:
 			break;
 		}
@@ -227,6 +238,27 @@ public class Worker {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 		}
 		mBox.sendMessage(m);
+	}
 
+	private void isParkingInAvailableArea(ClientServerMessage m) {
+		AreaDao ad = new AreaDao();
+		BiddingDao bd = new BiddingDao();
+		BusinessDao businessDao = new BusinessDao();
+		CarDao ca = new CarDao();
+		ParkingInfo userBp = ContentToObj.getParkingInfo(m.getMessageContent());
+		BmapPoint pBmapPoint = new BmapPoint(Long.parseLong(userBp
+				.getLocationLongitude()), Long.parseLong(userBp
+				.getLocationLatitude()));
+		String bmapPointsCoordinatesS = ad.getAreaCoordinates(businessDao
+				.getBusinessAreaId(bd.getBusinessIdFromBidding(ca
+						.getCarBidding(userBp.getCarNum()))));
+		BmapPoint[] bmapPointsCoordinates = ContentToObj
+				.getCoordinatesOfArea(bmapPointsCoordinatesS);
+		if(GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)){
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		}else {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
+		mBox.sendMessage(m);
 	}
 }

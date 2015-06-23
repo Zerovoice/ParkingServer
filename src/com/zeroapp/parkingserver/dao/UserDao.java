@@ -374,4 +374,23 @@ public class UserDao {
 		}
 
 	}
+	public int setUserBanlance(double profit,int userid){
+		String sql = "update parking.user_info set accountbanlance=accountbanlance+"+profit+" where userid=?";
+		try {
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps =  conn.prepareStatement(sql);
+		ps.setInt(1, userid);
+		int res =ps.executeUpdate();
+		if(res>0){
+		return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+		}else {
+		return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
+		
+	}
 }

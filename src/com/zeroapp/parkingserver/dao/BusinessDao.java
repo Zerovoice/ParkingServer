@@ -39,45 +39,47 @@ import com.zeroapp.tools.BmapPoint;
 
 public class BusinessDao {
 
-    /**
-     * <p>
-     * Title: getAvailableBusiness.
-     * </p>
-     * <p>
-     * Description: 获得当前时间段内可用的Business列表.
-     * </p>
-     * 
-     * @param time
-     * @return
-     */
-    public List<Bidding> getAvailableBusinessForCarOwner(int areaid,int userId) {
-        List<Bidding> resList = new ArrayList<Bidding>();
-        try {
-            String sql = "select * from business where areaid=?";
-            Connection conn = DBUtil.getDBUtil().getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, areaid);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {// TODO 数据类型需要修改
-            	Bidding b = new Bidding();
-            	b.setBusinessID(rs.getInt("businessid"));
-            	b.setUserID(userId);
-            	resList.add(b);
-            	}
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resList;
-    }
-    
-    public int createBusiness(String area,int maxuser,int maxtenderer,String cost,String earnings,String timestart,String timeend,int areaid ){
-    	String sql = "insert into business(MaxUserCount,MaxTendererCount,Cost,Earnings,TimeStart,TimeEnd,areaid) values(?,?,?,?,?,?,?)";
-    	try {
-    	Connection conn = DBUtil.getDBUtil().getConnection();
-    	PreparedStatement ps;
+	/**
+	 * <p>
+	 * Title: getAvailableBusiness.
+	 * </p>
+	 * <p>
+	 * Description: 获得当前时间段内可用的Business列表.
+	 * </p>
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public List<Bidding> getAvailableBusinessForCarOwner(int areaid, int userId) {
+		List<Bidding> resList = new ArrayList<Bidding>();
+		try {
+			String sql = "select * from business where areaid=?";
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, areaid);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {// TODO 数据类型需要修改
+				Bidding b = new Bidding();
+				b.setBusinessID(rs.getInt("businessid"));
+				b.setUserID(userId);
+				resList.add(b);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resList;
+	}
+
+	public int createBusiness(String area, int maxuser, int maxtenderer,
+			String cost, String earnings, String timestart, String timeend,
+			int areaid) {
+		String sql = "insert into business(MaxUserCount,MaxTendererCount,Cost,Earnings,TimeStart,TimeEnd,areaid) values(?,?,?,?,?,?,?)";
+		try {
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps;
 			ps = conn.prepareStatement(sql);
-			
-			ps.setInt(1,maxuser);
+
+			ps.setInt(1, maxuser);
 			ps.setInt(2, maxtenderer);
 			ps.setString(3, cost);
 			ps.setString(4, earnings);
@@ -85,45 +87,47 @@ public class BusinessDao {
 			ps.setString(6, timeend);
 			ps.setInt(7, areaid);
 			int rs = ps.executeUpdate();
-			if(rs>0){
+			if (rs > 0) {
 				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
 			}
-				return MessageConst.MessageResult.MSG_RESULT_FAIL;
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
-    }
-    public int removeBusiness(int businessid){
-    	String sql = "delete from parking.business where businessid=?";
-    	try {
-    	Connection conn= DBUtil.getDBUtil().getConnection();
-    	PreparedStatement ps = conn.prepareStatement(sql);
+	}
+
+	public int removeBusiness(int businessid) {
+		String sql = "delete from parking.business where businessid=?";
+		try {
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, businessid);
 			int rs = ps.executeUpdate();
-			if(rs>0){
+			if (rs > 0) {
 				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
 			}
-				return MessageConst.MessageResult.MSG_RESULT_FAIL;
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
-    }
-	public Business getBusinessDetails(int businessid){
-		
+	}
+
+	public Business getBusinessDetails(int businessid) {
+
 		String sql = "selecet * from  business where businessid=?";
 		try {
-		Connection conn = DBUtil.getDBUtil().getConnection();
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setInt(1, businessid);
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, businessid);
 			ResultSet res = ps.executeQuery();
-			if(res!=null){
-				while(res.next()){
+			if (res != null) {
+				while (res.next()) {
 					Business b = new Business();
-					b.setArea(res.getInt("area"));
+					b.setAreaId(res.getInt("areaid"));
 					b.setBusinessID(businessid);
 					b.setCost(res.getString("cost"));
 					b.setEarnings(res.getString("earnings"));
@@ -141,7 +145,30 @@ public class BusinessDao {
 		}
 		return null;
 	}
-	public String updateBusinessItems(int msgtype,String content){
-				return null;
+
+	public int getBusinessAreaId(int businessid) {
+		String sql = "select areaid from parking.business where businessid=?";
+		try {
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps;
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, businessid);
+			ResultSet res = ps.executeQuery();
+			if (res != null) {
+				while (res.next()) {
+					return	res.getInt("areaid");
+				}
+			}
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
+
+	}
+
+	public String updateBusinessItems(int msgtype, String content) {
+		return null;
 	}
 }

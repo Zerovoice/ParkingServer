@@ -16,6 +16,7 @@ package com.zeroapp.parkingserver.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,6 +119,24 @@ public class CarDao {
 		return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 	}
 
+	public int getCarBidding(String carN){
+		String sql = "select bidding from parking.car_info where carnum=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, carN);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				return res.getInt("biddingid");
+			}
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
+		
+	}
 	public boolean vote(String carNum, String BiddingID) {
 		try {
 			String sql = "update car_info set BiddingID=? where CarNum=?";
