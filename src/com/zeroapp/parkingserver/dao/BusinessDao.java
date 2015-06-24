@@ -130,7 +130,7 @@ public class BusinessDao {
 					b.setAreaId(res.getInt("areaid"));
 					b.setBusinessID(businessid);
 					b.setCost(res.getString("cost"));
-					b.setEarnings(res.getString("earnings"));
+					b.setEarnings(res.getDouble("earnings"));
 					b.setMaxtendererCount(res.getInt("maxtendererCount"));
 					b.setMaxUserCount(res.getInt("MaxUserCount"));
 					b.setTimeEnd(res.getString("timeend"));

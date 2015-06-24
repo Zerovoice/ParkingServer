@@ -90,7 +90,7 @@ public class BiddingDao {
 
 	public double getBiddingProfit(String businessTimeStart,
 			String businessTimeEnd, String userTimeStart, String userTimeEnd,
-			String unitEarning) {
+			double unitEarning) {
 
 		if (CalculateTimeUtils.isEndTimeBiggerThanStartTime(userTimeEnd,
 				businessTimeStart)
@@ -99,7 +99,7 @@ public class BiddingDao {
 			return MessageConst.MessageResult.MSG_RESULT_FAIL;
 
 		} else {
-			return (Double.valueOf(unitEarning).intValue())
+			return (unitEarning)
 					* (CalculateTimeUtils.getTimeDiff(userTimeStart,
 							userTimeEnd));
 

@@ -52,6 +52,10 @@ public class MessageConst {
 
         // Message types sent from Client by company
         public static final int MSG_TYPE_COMPANY_SIGN_IN = 2000;
+        public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_COST = 2001;
+        public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_EARINGS = 2002;
+        public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_TIME_END = 2003;
+        public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_TIME_START =2004;
 
         // Message types sent from Client by normal user
         public static final int MSG_TYPE_USER_SIGN_IN = 3000;

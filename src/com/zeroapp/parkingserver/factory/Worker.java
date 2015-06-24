@@ -20,6 +20,7 @@ import java.util.List;
 import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Area;
+import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CarInfo;
 import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.parkingserver.common.User;
@@ -83,7 +84,7 @@ public class Worker {
 		case MessageConst.MessageType.MSG_TYPE_USER_ADD_CARS:
 			addCars(m);
 		case MessageConst.MessageType.MSG_TYPE_USER_UPDATE_ADING:
-			isParkingInAvailableArea(m);
+			setParkingProfit(m);
 		default:
 			break;
 		}
@@ -240,23 +241,38 @@ public class Worker {
 		mBox.sendMessage(m);
 	}
 
-	private void isParkingInAvailableArea(ClientServerMessage m) {
+	private void setParkingProfit(ClientServerMessage m) {
 		AreaDao ad = new AreaDao();
 		BiddingDao bd = new BiddingDao();
 		BusinessDao businessDao = new BusinessDao();
-		CarDao ca = new CarDao();
+		CarDao caD = new CarDao();
+		UserDao userD = new UserDao();
+		int areaId = -1;
+		ArrayList<Integer> biddArrayList;
 		ParkingInfo userBp = ContentToObj.getParkingInfo(m.getMessageContent());
 		BmapPoint pBmapPoint = new BmapPoint(Long.parseLong(userBp
 				.getLocationLongitude()), Long.parseLong(userBp
 				.getLocationLatitude()));
-		String bmapPointsCoordinatesS = ad.getAreaCoordinates(businessDao
-				.getBusinessAreaId(bd.getBusinessIdFromBidding(ca
-						.getCarBidding(userBp.getCarNum()))));
-		BmapPoint[] bmapPointsCoordinates = ContentToObj
-				.getCoordinatesOfArea(bmapPointsCoordinatesS);
-		if(GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)){
-			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
-		}else {
+		biddArrayList = caD.getCarBidding(userBp.getCarNum());
+		for (int businessId : biddArrayList) {
+
+			String bmapPointsCoordinatesS = ad.getAreaCoordinates(businessDao
+					.getBusinessAreaId(bd.getBusinessIdFromBidding(businessDao
+							.getBusinessAreaId(businessId))));
+			Business bs = businessDao.getBusinessDetails(businessId);
+			BmapPoint[] bmapPointsCoordinates = ContentToObj
+					.getCoordinatesOfArea(bmapPointsCoordinatesS);
+			if (GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)) {
+				areaId = businessDao.getBusinessAreaId(businessId);
+				
+				double profit = bd.getBiddingProfit(bs.getTimeStart(), bs.getTimeEnd(), userBp.getTimeStart(), userBp.getTimeEnd(), bs.getEarnings());
+				double banlance = userD.setUserBanlance(profit, userBp.getUserId());
+				m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+				m.setMessageContent(ObjToContent.getContent(ad.getAreaName(areaId)+"|"+banlance));
+				break;
+			} 
+		}
+		if(areaId == -1){
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
 		mBox.sendMessage(m);

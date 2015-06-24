@@ -46,7 +46,7 @@ public class Business {
 	/**
 	 * 用户选择该业务的单位收益
 	 */
-	private String earnings = "0";
+	private double earnings = 0;
 	/**
 	 * 广告商选择该业务的单位成本
 	 */
@@ -186,7 +186,7 @@ public class Business {
 	 * 
 	 * @return the earnings.
 	 */
-	public String getEarnings() {
+	public double getEarnings() {
 		return earnings;
 	}
 
@@ -201,7 +201,7 @@ public class Business {
 	 * @param earnings
 	 *            the earnings to set.
 	 */
-	public void setEarnings(String earnings) {
+	public void setEarnings(double earnings) {
 		this.earnings = earnings;
 	}
 

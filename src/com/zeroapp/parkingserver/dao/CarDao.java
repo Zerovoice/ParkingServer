@@ -119,23 +119,25 @@ public class CarDao {
 		return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 	}
 
-	public int getCarBidding(String carN){
+	public ArrayList<Integer> getCarBidding(String carN){
 		String sql = "select bidding from parking.car_info where carnum=?";
 		Connection conn = DBUtil.getDBUtil().getConnection();
+		ArrayList<Integer> biddingIdArrayList =  new ArrayList<Integer>(); 
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, carN);
 			ResultSet res = ps.executeQuery();
 			if(res!=null){
-				return res.getInt("biddingid");
+				while(res.next()){
+				biddingIdArrayList.add(res.getInt("biddingid"));
+				}
+				return biddingIdArrayList;
 			}
-			return MessageConst.MessageResult.MSG_RESULT_FAIL;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
-		
+		return null;
 	}
 	public boolean vote(String carNum, String BiddingID) {
 		try {
