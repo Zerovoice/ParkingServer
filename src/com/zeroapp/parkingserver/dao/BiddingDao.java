@@ -88,23 +88,6 @@ public class BiddingDao {
 		return false;
 	}
 
-	public double getBiddingProfit(String businessTimeStart,
-			String businessTimeEnd, String userTimeStart, String userTimeEnd,
-			double unitEarning) {
-
-		if (CalculateTimeUtils.isEndTimeBiggerThanStartTime(userTimeEnd,
-				businessTimeStart)
-				&& CalculateTimeUtils.isEndTimeBiggerThanStartTime(
-						userTimeStart, userTimeStart)) {
-			return MessageConst.MessageResult.MSG_RESULT_FAIL;
-
-		} else {
-			return (unitEarning)
-					* (CalculateTimeUtils.getTimeDiff(userTimeStart,
-							userTimeEnd));
-
-		}
-	}
 
 	public ArrayList<Bidding> getUserBiddings(int userId) {
 		ArrayList<Bidding> biddingArrayList = new ArrayList<Bidding>();

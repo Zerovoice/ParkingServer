@@ -32,6 +32,7 @@ import com.zeroapp.parkingserver.dao.UserDao;
 import com.zeroapp.parkingserver.model.MessageBox;
 import com.zeroapp.tools.BmapPoint;
 import com.zeroapp.tools.GraphTool;
+import com.zeroapp.tools.Tool;
 import com.zeroapp.utils.Log;
 
 /**
@@ -73,10 +74,10 @@ public class Worker {
 			listBiddings(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_USER_SELECT_BIDDING:
-			// TODO
+			createBid(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_USER_SEND_PARK_INFO:
-			// TODO
+			setParkingProfit(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_USER_LIST_MYCARS:
 			listCars(m);
@@ -265,7 +266,7 @@ public class Worker {
 			if (GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)) {
 				areaId = businessDao.getBusinessAreaId(businessId);
 				
-				double profit = bd.getBiddingProfit(bs.getTimeStart(), bs.getTimeEnd(), userBp.getTimeStart(), userBp.getTimeEnd(), bs.getEarnings());
+				double profit = Tool.getBiddingProfit(bs.getTimeStart(), bs.getTimeEnd(), userBp.getTimeStart(), userBp.getTimeEnd(), bs.getEarnings());
 				double banlance = userD.setUserBanlance(profit, userBp.getUserId());
 				m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 				m.setMessageContent(ObjToContent.getContent(ad.getAreaName(areaId)+"|"+banlance));
@@ -273,6 +274,15 @@ public class Worker {
 			} 
 		}
 		if(areaId == -1){
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
+		mBox.sendMessage(m);
+	}
+	public void createBid(ClientServerMessage m){
+		BiddingDao bd = new BiddingDao();
+		if(bd.createBid(ContentToObj.getBidding(m.getMessageContent()))){
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		}else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
 		mBox.sendMessage(m);

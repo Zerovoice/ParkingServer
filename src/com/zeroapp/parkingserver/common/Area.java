@@ -9,6 +9,8 @@ public class Area {
 		private String areaname;
 		private BmapPoint[] bmapPointsInstance;
 		private String bmapPoints;
+		public Area(){
+		}
 		public Area(int areaid_sql,int cityid_sql,String areaname_sql,String bmapPoints_sql){
 			this.areaid = areaid_sql;
 			this.cityid = cityid_sql;

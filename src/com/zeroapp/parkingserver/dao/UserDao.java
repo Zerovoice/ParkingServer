@@ -357,7 +357,7 @@ public class UserDao {
 	}
 
 	public String getUserBanlance(int userId) {
-		String sql = "select balance from parking.user_info where userid=?";
+		String sql = "select AccountBanlance from parking.user_info where userid=?";
 		try {
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
