@@ -337,7 +337,7 @@ public class UserDao {
 		return false;
 	}
 
-	public String isAccountExist(String accountname) {
+	public int isAccountExist(String accountname) {
 		String sql = "select account from parking.user_info where account=?";
 		try {
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -351,7 +351,7 @@ public class UserDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_STRING;
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
 
 	}

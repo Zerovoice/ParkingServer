@@ -50,7 +50,7 @@ public class Business {
 	/**
 	 * 广告商选择该业务的单位成本
 	 */
-	private String cost = "0";
+	private double cost = 0;
 	/**
 	 * 该业务起始时间
 	 */
@@ -215,7 +215,7 @@ public class Business {
 	 * 
 	 * @return the cost.
 	 */
-	public String getCost() {
+	public double getCost() {
 		return cost;
 	}
 
@@ -230,7 +230,7 @@ public class Business {
 	 * @param cost
 	 *            the cost to set.
 	 */
-	public void setCost(String cost) {
+	public void setCost(double cost) {
 		this.cost = cost;
 	}
 

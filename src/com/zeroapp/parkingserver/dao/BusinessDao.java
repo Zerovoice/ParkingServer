@@ -129,7 +129,7 @@ public class BusinessDao {
 					Business b = new Business();
 					b.setAreaId(res.getInt("areaid"));
 					b.setBusinessID(businessid);
-					b.setCost(res.getString("cost"));
+					b.setCost(res.getDouble("cost"));
 					b.setEarnings(res.getDouble("earnings"));
 					b.setMaxtendererCount(res.getInt("maxtendererCount"));
 					b.setMaxUserCount(res.getInt("MaxUserCount"));
@@ -156,7 +156,7 @@ public class BusinessDao {
 			ResultSet res = ps.executeQuery();
 			if (res != null) {
 				while (res.next()) {
-					return	res.getInt("areaid");
+					return res.getInt("areaid");
 				}
 			}
 			return MessageConst.MessageResult.MSG_RESULT_FAIL;
@@ -168,7 +168,25 @@ public class BusinessDao {
 
 	}
 
-	public String updateBusinessItems(int msgtype, String content) {
-		return null;
+	public int updateBusinessCostItem(double userProfit, int businessId) {
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		String sql;
+		try {
+			if (userProfit == -1) {
+				sql = "update parking.business set cost=0 where businessid=?";
+			}
+				sql = "update parking.business set cost=cost-" + userProfit
+					+ "where businessid=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, businessId);
+			int res = ps.executeUpdate();
+			if (res > 0) {
+				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+			}
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
 	}
 }

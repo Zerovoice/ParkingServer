@@ -15,7 +15,7 @@ import com.zeroapp.tools.BmapPoint;
 public class ParkingInfoDao {
 	public int creatParkingInfo(String carNum, String longitude,
 			String latitude, String timeStart, String timeEnd,
-			String moneyEarning, String moneyCost, int biddingId) {
+			double moneyEarning, double moneyCost, int userId) {
 		String sql = "insert into parking.parking_info values(null,?,?,?,?,?,?,?,?)";
 		try {
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -25,9 +25,9 @@ public class ParkingInfoDao {
 			ps.setString(3, latitude);
 			ps.setString(4, timeStart);
 			ps.setString(5, timeEnd);
-			ps.setString(6, moneyEarning);
-			ps.setString(7, moneyCost);
-			ps.setInt(8, biddingId);
+			ps.setDouble(6, moneyEarning);
+			ps.setDouble(7, moneyCost);
+			ps.setInt(8, userId);
 			int res = ps.executeUpdate();
 			if(res>0){
 				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;

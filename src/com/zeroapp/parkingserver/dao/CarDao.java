@@ -84,12 +84,16 @@ public class CarDao {
 	 */
 	public int addCar(CarInfo car) {
 		try {
-			String sql = "insert into car_info (carnum,userid) values(?,?)";// TODO
+			String sql = "insert into car_info (carnum,userid) values(?,?,?,?,?,?,?)";// TODO
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, car.getCarNum());
 			ps.setInt(2, car.getUserID());
-
+			ps.setInt(3, car.getBiddingID());
+			ps.setString(4, car.getCarState());
+			ps.setInt(5, car.getCarValue());
+			ps.setString(6,car.getCarType());
+			ps.setString(7, car.getParkingArea());
 			int rs = ps.executeUpdate();
 			if (rs > 0) {
 				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;

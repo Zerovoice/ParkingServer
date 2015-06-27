@@ -90,8 +90,11 @@ public class MessageConst {
     	
     }
     public class USER_CONSTANST{
-    	public static final String ALREADY_EXIST = "suc";
-    	public static final String NOT_EXIST = "fail";
+    	public static final int ALREADY_EXIST = -1;
+    	public static final int NOT_EXIST = 1;
     	
+    }
+    public class BUSINESS_CONSTANST{
+    	public static final int MONEY_EXPENDED = 0;
     }
 }
