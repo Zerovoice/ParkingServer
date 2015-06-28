@@ -1,5 +1,6 @@
 package com.zeroapp.parkingserver.dao;
 
+import java.awt.image.DataBuffer;
 import java.security.interfaces.RSAKey;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -56,7 +57,7 @@ public class UserDao {
 			ps.setInt(5, u.getSex());
 			ps.setString(6, u.getPhoneNum());
 			ps.setString(7, u.getUserType());
-			ps.setInt(8, u.getAccountBanlance());
+			ps.setDouble(8, u.getAccountBanlance());
 			int r = ps.executeUpdate();
 			if (r > 0) {
 				return 1;
@@ -391,6 +392,46 @@ public class UserDao {
 			e.printStackTrace();
 			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
-		
+	}
+	public User getUserInfosFormUserId(int userid){
+		String sql = "select * from parking.user_info where userid=?";
+		User u =  new User();
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, userid);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+				u.setAccountBanlance(res.getDouble("accountbanlance"));
+				}
+			}
+			return u;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public int updateUserAccountItem(double profit, int userid) {
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		String sql;
+		try {
+			if (profit == -1) {
+				sql = "update parking.user_info set AccountBanlance=0 where userid=?";
+			}
+				sql = "update parking.user_info set AccountBanlance=AccountBanlance-" + profit
+					+ "where userid=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, userid);
+			int res = ps.executeUpdate();
+			if (res > 0) {
+				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+			}
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
 	}
 }

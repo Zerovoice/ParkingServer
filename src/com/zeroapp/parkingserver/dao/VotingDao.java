@@ -13,6 +13,17 @@
 
 package com.zeroapp.parkingserver.dao;
 
+import io.netty.handler.codec.http.HttpContentEncoder.Result;
+
+import java.net.ConnectException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.zeroapp.parking.message.MessageConst;
+import com.zeroapp.parkingserver.common.Voting;
+
 
 /**
  * <p>Title: TODO.</p>
@@ -23,5 +34,47 @@ package com.zeroapp.parkingserver.dao;
  */
 
 public class VotingDao {
-
+	public Voting getVoting(String carN){
+		String sql = "select * from parking.voting where CarNum=?";
+		Voting voting = new Voting();
+		try {
+		Connection conn =  DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, carN);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+					voting.setBiddingID(res.getInt("biddingid"));
+					voting.setCarNum(carN);
+					voting.setState(res.getString("state"));
+					voting.setVotingID(res.getInt("votingID"));
+				}
+				return voting;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public int createVoting(Voting v){
+		String sql = "insert into parking.voting values(null,?,?,?)";
+		try {
+		Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, v.getBiddingID());
+			ps.setString(2, v.getCarNum());
+			ps.setString(3, v.getState());
+			int res = ps.executeUpdate();
+			if(res > 0){
+				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+			}
+			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
+		
+	}
 }

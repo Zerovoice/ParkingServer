@@ -56,6 +56,8 @@ public class MessageConst {
         public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_EARINGS = 2002;
         public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_TIME_END = 2003;
         public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_TIME_START =2004;
+        public static final int MSG_TYPE_COMPANY_LIST_BUSINESS =2005;
+        public static final int MSG_TYPE_COMPANY_CREATE_BIDDING = 2006;
 
         // Message types sent from Client by normal user
         public static final int MSG_TYPE_USER_SIGN_IN = 3000;
@@ -68,6 +70,8 @@ public class MessageConst {
         public static final int MSG_TYPE_USER_LIST_MYCARS = 3007;
         public static final int MSG_TYPE_USER_ADD_CARS = 3008;
         public static final int MSG_TYPE_USER_UPDATE_ADING = 3009;
+//        public static final int MSG_TYPE_USER_SET_BIDDING_CAR = 3010;
+        public static final int MSG_TYPE_USER_CREATE_VOTING = 3010;
 
         // Message types sent from the BluetoothChatService Handler
         public static final int MSG_TYPE_BLUETOOTH_STATE_CHANGE = 11;

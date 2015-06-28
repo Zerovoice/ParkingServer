@@ -39,19 +39,19 @@ public class ParkingInfo {
     /**
      * 该次停车记录点的经度
      */
-    private String locationLongitude = "";
+    private double locationLongitude  = 0;
     /**
      * 该次停车记录点的纬度
      */
-    private String locationLatitude = "";
+    private double locationLatitude  = 0;
     /**
      * 该次停车记录的起始时间
      */
-    private String timeStart = "0";
+    private long timeStart = 0;
     /**
      * 该次停车记录的终止时间
      */
-    private String timeEnd = "0";
+    private long timeEnd = 0;
     /**
      * 该次停车记录的收入
      */
@@ -131,7 +131,7 @@ public class ParkingInfo {
      * 
      * @return the locationLongitude.
      */
-    public String getLocationLongitude() {
+    public double getLocationLongitude() {
         return locationLongitude;
     }
 
@@ -146,7 +146,7 @@ public class ParkingInfo {
      * @param locationLongitude
      *            the locationLongitude to set.
      */
-    public void setLocationLongitude(String locationLongitude) {
+    public void setLocationLongitude(double locationLongitude) {
         this.locationLongitude = locationLongitude;
     }
 
@@ -160,7 +160,7 @@ public class ParkingInfo {
      * 
      * @return the locationLatitude.
      */
-    public String getLocationLatitude() {
+    public double getLocationLatitude() {
         return locationLatitude;
     }
 
@@ -175,7 +175,7 @@ public class ParkingInfo {
      * @param locationLatitude
      *            the locationLatitude to set.
      */
-    public void setLocationLatitude(String locationLatitude) {
+    public void setLocationLatitude(double locationLatitude) {
         this.locationLatitude = locationLatitude;
     }
 
@@ -189,7 +189,7 @@ public class ParkingInfo {
      * 
      * @return the timeStart.
      */
-    public String getTimeStart() {
+    public long getTimeStart() {
         return timeStart;
     }
 
@@ -204,7 +204,7 @@ public class ParkingInfo {
      * @param timeStart
      *            the timeStart to set.
      */
-    public void setTimeStart(String timeStart) {
+    public void setTimeStart(long timeStart) {
         this.timeStart = timeStart;
     }
 
@@ -218,7 +218,7 @@ public class ParkingInfo {
      * 
      * @return the timeEnd.
      */
-    public String getTimeEnd() {
+    public long getTimeEnd() {
         return timeEnd;
     }
 
@@ -233,7 +233,7 @@ public class ParkingInfo {
      * @param timeEnd
      *            the timeEnd to set.
      */
-    public void setTimeEnd(String timeEnd) {
+    public void setTimeEnd(long timeEnd) {
         this.timeEnd = timeEnd;
     }
 

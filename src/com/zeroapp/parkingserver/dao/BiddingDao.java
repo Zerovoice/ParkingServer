@@ -71,7 +71,7 @@ public class BiddingDao {
 
 	public boolean createBid(Bidding b) {
 		try {
-			String sql = "insert into bidding(businessid,userid,timestart,timeend) values(?,?,?,?)";// TODO
+			String sql = "insert into parking.bidding(businessid,userid,timestart,timeend) values(?,?,?,?)";// TODO
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, b.getBusinessID());
@@ -144,5 +144,53 @@ public class BiddingDao {
 			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
 
+	}
+	public Bidding getBiddingDetailsFormBiddingId(int biddingid){
+		Bidding bding =  new Bidding();
+		String sql = "select * from parking.bidding where biddingid=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, biddingid);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+					bding.setBiddingID(biddingid);
+					bding.setBusinessID(res.getInt("businessid"));
+					bding.setTimeEnd(res.getString("timeend"));
+					bding.setTimeStart(res.getString("timestart"));
+					bding.setUserID(res.getInt("userid"));
+				}
+			}
+			return bding;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public Bidding getBiddingDetailsFormBusinessId(int businessid){
+		Bidding bding =  new Bidding();
+		String sql = "select * from parking.bidding where businessid=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps;
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, businessid);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+					bding.setBusinessID(businessid);
+					bding.setBiddingID(res.getInt("biddingid"));
+					bding.setTimeEnd(res.getString("timeend"));
+					bding.setTimeStart(res.getString("timestart"));
+					bding.setUserID(res.getInt("userid"));
+				}
+			}
+			return bding;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -71,7 +71,7 @@ public class AreaDao {
 				e.printStackTrace();
 				return MessageConst.MessageResult.SQL_QUERY_FAILURE;
 			}
-	}
+	} 
 	public Area getAreaDetails(int areaId){
 		String sql = "select * from parking.areas_details where Id_p=?";
 		Connection conn = DBUtil.getDBUtil().getConnection();
@@ -95,5 +95,20 @@ public class AreaDao {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public void createArea(Area a){
+		String sql = "insert into parking.areas_details values(null,?,?,?)";
+		Connection conn =  DBUtil.getDBUtil().getConnection();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, a.getCityId());
+			ps.setString(2, a.getAreaName());
+			ps.setString(3, a.getBmapPoints());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

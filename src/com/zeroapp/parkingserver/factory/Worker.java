@@ -14,24 +14,30 @@
 package com.zeroapp.parkingserver.factory;
 
 import java.awt.GradientPaint;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Area;
+import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CarInfo;
 import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.parkingserver.common.User;
+import com.zeroapp.parkingserver.common.Voting;
 import com.zeroapp.parkingserver.dao.AreaDao;
 import com.zeroapp.parkingserver.dao.BiddingDao;
 import com.zeroapp.parkingserver.dao.BusinessDao;
 import com.zeroapp.parkingserver.dao.CarDao;
+import com.zeroapp.parkingserver.dao.CityDao;
 import com.zeroapp.parkingserver.dao.ParkingInfoDao;
 import com.zeroapp.parkingserver.dao.UserDao;
+import com.zeroapp.parkingserver.dao.VotingDao;
 import com.zeroapp.parkingserver.model.MessageBox;
 import com.zeroapp.tools.BmapPoint;
+import com.zeroapp.tools.CalculateTimeUtils;
 import com.zeroapp.tools.GraphTool;
 import com.zeroapp.tools.Tool;
 import com.zeroapp.utils.Log;
@@ -60,7 +66,7 @@ public class Worker {
 		if (m == null || m.getMessageType() == -1) {
 			return;
 		}
-		Log.i("" + m.getMessageType());
+		Log.i("MessageType: " + m.getMessageType());
 		switch (m.getMessageType()) {
 		case MessageConst.MessageType.MSG_TYPE_USER_SIGN_IN:
 			signIn(m);
@@ -85,8 +91,19 @@ public class Worker {
 			break;
 		case MessageConst.MessageType.MSG_TYPE_USER_ADD_CARS:
 			addCars(m);
-		case MessageConst.MessageType.MSG_TYPE_USER_UPDATE_ADING:
-			setParkingProfit(m);
+			break;
+//		case MessageConst.MessageType.MSG_TYPE_USER_UPDATE_ADING:
+//			setParkingProfit(m);
+//			break;
+		case MessageConst.MessageType.MSG_TYPE_COMPANY_CREATE_BIDDING:
+			biddingsCreatedByCom(m);
+			break;
+		case MessageConst.MessageType.MSG_TYPE_USER_CREATE_VOTING:
+			createVoting(m);
+			break;
+		case MessageConst.MessageType.MSG_TYPE_COMPANY_LIST_BUSINESS:
+			getBusinessList(m);
+			break;
 		default:
 			break;
 		}
@@ -131,21 +148,23 @@ public class Worker {
 	private void signup(ClientServerMessage m) {
 		UserDao ud = new UserDao();
 		User u = ContentToObj.getUser(m.getMessageContent());
+		if (ud.isAccountExist(u.getAccount()) != MessageConst.USER_CONSTANST.NOT_EXIST) {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+			m.setMessageContent("exist");
+			mBox.sendMessage(m);
+			return;
+		}
 		int result = ud.signUp(u);
 		Log.i("back-->Result: " + result);
 		m.setMessageResult(result);
 		if (result == 1) {
-			if (ud.isAccountExist(u.getAccount()) != MessageConst.USER_CONSTANST.NOT_EXIST) {
-				m.setMessageResult(ud.isAccountExist(u.getAccount()));
-				return;
-			}
 			u = ud.getUserInfo(u.getAccount());
 			String content = ObjToContent.getContent(u);
 			m.setMessageContent(content);
 			Log.i("back-->Content: " + content);
-			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 		} else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+			m.setMessageContent("sqlexp");
 		}
 		mBox.sendMessage(m);
 
@@ -204,9 +223,20 @@ public class Worker {
 	 */
 	private void listBiddings(ClientServerMessage m) {
 		if (m.getMessageContent().equals("qingdao")) {
+			ArrayList<Bidding> biddingArrayList = new ArrayList<Bidding>();
+			AreaDao ad = new AreaDao();
+			BusinessDao bd = new BusinessDao();
+			// CityDao c = new CityDao();
+			// int areaid = c.getCityId(m.getMessageContent());//will open
+			// later;
+			int areaid = 1903;
+			biddingArrayList = bd.getBiddingDetailsFromBusiness(areaid);
 			Log.i("back-->Result: "
 					+ MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+			m.setMessageContent(ObjToContent.getContent(biddingArrayList));
+		} else {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
 
 		// CarDao d = new CarDao();
@@ -254,50 +284,54 @@ public class Worker {
 		CarDao caD = new CarDao();
 		UserDao userD = new UserDao();
 		ParkingInfoDao pId = new ParkingInfoDao();
+		VotingDao votingDao = new VotingDao();
 		int areaId = -1;
-		ArrayList<Integer> biddArrayList;
+		int biddingId;
 		ParkingInfo userBp = ContentToObj.getParkingInfo(m.getMessageContent());
-		BmapPoint pBmapPoint = new BmapPoint(Long.parseLong(userBp
-				.getLocationLongitude()), Long.parseLong(userBp
-				.getLocationLatitude()));
-		biddArrayList = caD.getCarBidding(userBp.getCarNum());
-		for (int businessId : biddArrayList) {
+		BmapPoint pBmapPoint = new BmapPoint(userBp
+				.getLocationLongitude(), userBp
+				.getLocationLatitude());
+		biddingId = votingDao.getVoting(userBp.getCarNum()).getBiddingID();
+		int businessId = bd.getBusinessIdFromBidding(biddingId);
+		int userComId = bd.getBiddingDetailsFormBiddingId(biddingId)
+				.getUserID();
+		String bmapPointsCoordinatesS = ad.getAreaCoordinates(businessDao
+				.getBusinessAreaId(businessId));
+		Log.w("Bmap points coordinates: "+bmapPointsCoordinatesS);
+		Business bs = businessDao.getBusinessDetails(businessId);
+		User userCom = userD.getUserInfosFormUserId(userComId);
+		BmapPoint[] bmapPointsCoordinates = ContentToObj
+				.getCoordinatesOfArea(bmapPointsCoordinatesS);
+		if (GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)) {
+			areaId = businessDao.getBusinessAreaId(businessId);
 
-			String bmapPointsCoordinatesS = ad.getAreaCoordinates(businessDao
-					.getBusinessAreaId(bd.getBusinessIdFromBidding(businessDao
-							.getBusinessAreaId(businessId))));
-			Business bs = businessDao.getBusinessDetails(businessId);
-			BmapPoint[] bmapPointsCoordinates = ContentToObj
-					.getCoordinatesOfArea(bmapPointsCoordinatesS);
-			if (GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)) {
-				areaId = businessDao.getBusinessAreaId(businessId);
-
-				double profit = Tool.getBiddingProfit(bs.getTimeStart(),
-						bs.getTimeEnd(), userBp.getTimeStart(),
-						userBp.getTimeEnd(), bs.getEarnings());
-				if (bs.getCost() <= 0) {
-					m.setMessageResult(MessageConst.BUSINESS_CONSTANST.MONEY_EXPENDED);
-					businessDao.updateBusinessCostItem(-1, businessId);
-					mBox.sendMessage(m);
-					return;
-				} else if (bs.getCost() < profit) {
-					userD.setUserBanlance(bs.getCost(), userBp.getUserId());
-					businessDao.updateBusinessCostItem(-1, businessId);
-				} else {
-					businessDao.updateBusinessCostItem(profit, businessId);
-					userD.setUserBanlance(profit, userBp.getUserId());
-					m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
-					m.setMessageContent(ObjToContent.getContent(ad
-							.getAreaName(areaId)
-							+ "|"
-							+ userD.getUserBanlance(userBp.getUserId())));
-					break;
-				}
-				pId.creatParkingInfo(userBp.getCarNum(),
-						userBp.getLocationLongitude(),
-						userBp.getLocationLatitude(), userBp.getTimeStart(),
-						userBp.getTimeEnd(), profit, 0, userBp.getUserId());
+			double profitUser = Tool.getBiddingProfit(bs.getTimeStart(),
+					bs.getTimeEnd(), CalculateTimeUtils.convert2String(userBp.getTimeStart()),
+					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), bs.getEarnings());
+			double profitCompany = Tool.getBiddingProfit(bs.getTimeStart(),
+					bs.getTimeEnd(),CalculateTimeUtils.convert2String(userBp.getTimeStart()),
+					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), bs.getCost());
+			if (userCom.getAccountBanlance() <= 0) {
+				m.setMessageResult(MessageConst.BUSINESS_CONSTANST.MONEY_EXPENDED);
+				businessDao.updateBusinessCostItem(-1, businessId);
+				mBox.sendMessage(m);
+				return;
+			} else if (userCom.getAccountBanlance() <= profitCompany) {
+				userD.setUserBanlance(userCom.getAccountBanlance(), userBp.getUserId());
+				userD.updateUserAccountItem(-1, userComId);
+			} else {
+				userD.updateUserAccountItem(profitCompany, userComId);
+				userD.setUserBanlance(profitUser, userBp.getUserId());
+				m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+				m.setMessageContent(ObjToContent.getContent(ad
+						.getAreaName(areaId)
+						+ "|"
+						+ userD.getUserBanlance(userBp.getUserId())));
 			}
+			pId.creatParkingInfo(userBp.getCarNum(),
+					userBp.getLocationLongitude(),
+					userBp.getLocationLatitude(), CalculateTimeUtils.convert2String(userBp.getTimeStart()),
+					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), profitUser, profitCompany, userBp.getUserId());
 		}
 		if (areaId == -1) {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
@@ -314,8 +348,44 @@ public class Worker {
 		}
 		mBox.sendMessage(m);
 	}
+
 	// public int setBiddingId2Car(ClientServerMessage m){
-	// BiddingDao bd = new BiddingDao();
-	//
+	// CarDao cd = new CarDao();
+	// cd.set
 	// }
+	private void createVoting(ClientServerMessage m) {
+		//TODO 查询car state，更改cat state; 
+		VotingDao vDao = new VotingDao();
+		int res = vDao.createVoting(ContentToObj.getVoting(m
+				.getMessageContent()));
+
+		m.setMessageResult(res);
+
+		mBox.sendMessage(m);
+	}
+
+	private void getBusinessList(ClientServerMessage m) {
+		int areaId = 7;// temp
+		BusinessDao bd = new BusinessDao();
+		ArrayList<Business> bArrayList = bd.getAvailableBusinessForCom(areaId);
+		if (bArrayList != null) {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+			m.setMessageContent(ObjToContent.getContent(bArrayList));
+		} else {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
+		mBox.sendMessage(m);
+	}
+
+	private void biddingsCreatedByCom(ClientServerMessage m) {
+		BiddingDao bd = new BiddingDao();
+		boolean resBoolean = bd.createBid(ContentToObj.getBidding(m
+				.getMessageContent()));
+		if (resBoolean) {
+			m.setMessageType(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		} else {
+			m.setMessageType(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
+		mBox.sendMessage(m);
+	}
 }

@@ -11,18 +11,19 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.tools.BmapPoint;
+import com.zeroapp.tools.CalculateTimeUtils;
 
 public class ParkingInfoDao {
-	public int creatParkingInfo(String carNum, String longitude,
-			String latitude, String timeStart, String timeEnd,
+	public int creatParkingInfo(String carNum, double longitude,
+			double latitude, String timeStart, String timeEnd,
 			double moneyEarning, double moneyCost, int userId) {
 		String sql = "insert into parking.parking_info values(null,?,?,?,?,?,?,?,?)";
 		try {
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, carNum);
-			ps.setString(2, longitude);
-			ps.setString(3, latitude);
+			ps.setDouble(2, longitude);
+			ps.setDouble(3, latitude);
 			ps.setString(4, timeStart);
 			ps.setString(5, timeEnd);
 			ps.setDouble(6, moneyEarning);
@@ -53,12 +54,12 @@ public class ParkingInfoDao {
 				while(res.next()){
 					ParkingInfo paInfo = new ParkingInfo();
 					paInfo.setCarNum(carNum);
-					paInfo.setLocationLatitude(res.getString("locationLatitude"));
-					paInfo.setLocationLongitude(res.getString("locationLongitude"));
+					paInfo.setLocationLatitude(res.getDouble("locationLatitude"));
+					paInfo.setLocationLongitude(res.getDouble("locationLongitude"));
 					paInfo.setMoney(res.getString("money"));
 					paInfo.setParkingID(res.getInt("parkingID"));
-					paInfo.setTimeEnd(res.getString("timeEnd"));
-					paInfo.setTimeStart(res.getString("timeStart"));
+					paInfo.setTimeEnd(CalculateTimeUtils.convert2long(res.getString("timeEnd")));
+					paInfo.setTimeStart(CalculateTimeUtils.convert2long(res.getString("timeStart")));
 					paArrayList.add(paInfo);
 				}
 				return paArrayList;

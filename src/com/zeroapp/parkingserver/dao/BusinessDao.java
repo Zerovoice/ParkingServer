@@ -23,7 +23,7 @@ import java.util.List;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.Business;
-import com.zeroapp.tools.BmapPoint;
+import com.zeroapp.utils.Log;
 
 /**
  * <p>
@@ -50,28 +50,23 @@ public class BusinessDao {
 	 * @param time
 	 * @return
 	 */
-	public List<Bidding> getAvailableBusinessForCarOwner(int areaid, int userId) {
-		List<Bidding> resList = new ArrayList<Bidding>();
-		try {
-			String sql = "select * from business where areaid=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, areaid);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {// TODO 数据类型需要修改
-				Bidding b = new Bidding();
-				b.setBusinessID(rs.getInt("businessid"));
-				b.setUserID(userId);
-				resList.add(b);
+	public ArrayList<Bidding> getBiddingDetailsFromBusiness(int areaid) {
+		ArrayList<Business> businessList = new ArrayList<Business>();
+		ArrayList<Bidding> biddingList =  new ArrayList<Bidding>();
+		
+		BiddingDao biddingDao = new BiddingDao();
+			businessList = getAvailableBusinessForCom(areaid);
+			
+			for(Business b:businessList){
+				Bidding bding = new Bidding();
+				bding = biddingDao.getBiddingDetailsFormBusinessId(b.getBusinessID());
+				biddingList.add(bding);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return resList;
+			return biddingList;
 	}
 
 	public int createBusiness(String area, int maxuser, int maxtenderer,
-			String cost, String earnings, String timestart, String timeend,
+			double cost, double earnings, String timestart, String timeend,
 			int areaid) {
 		String sql = "insert into business(MaxUserCount,MaxTendererCount,Cost,Earnings,TimeStart,TimeEnd,areaid) values(?,?,?,?,?,?,?)";
 		try {
@@ -81,8 +76,8 @@ public class BusinessDao {
 
 			ps.setInt(1, maxuser);
 			ps.setInt(2, maxtenderer);
-			ps.setString(3, cost);
-			ps.setString(4, earnings);
+			ps.setDouble(3, cost);
+			ps.setDouble(4, earnings);
 			ps.setString(5, timestart);
 			ps.setString(6, timeend);
 			ps.setInt(7, areaid);
@@ -188,5 +183,30 @@ public class BusinessDao {
 			e.printStackTrace();
 			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
+	}
+	public ArrayList<Business> getAvailableBusinessForCom(int areaid) {
+		ArrayList<Business> resList = new ArrayList<Business>();
+		try {
+			String sql = "select * from parking.business where areaid=?";
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, areaid);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {// TODO 数据类型需要修改
+				Business b = new Business();
+				b.setAreaId(areaid);
+				b.setBusinessID(rs.getInt("businessid"));
+				b.setCost(rs.getDouble("cost"));
+				b.setEarnings(rs.getDouble("Earnings"));
+				b.setMaxtendererCount(rs.getInt("maxtendererCount"));
+				b.setMaxUserCount(rs.getInt("maxUserCount"));
+				b.setTimeEnd(rs.getString("timeend"));
+				b.setTimeStart(rs.getString("timeStart"));
+				resList.add(b);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resList;
 	}
 }

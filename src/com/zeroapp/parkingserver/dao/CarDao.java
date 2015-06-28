@@ -62,6 +62,8 @@ public class CarDao {
 				car.setUserID(userID);
 				car.setBiddingID(rs.getInt("BiddingID"));
 				car.setCarState(rs.getString("State"));
+				car.setCarType(rs.getString("cartype"));
+				car.setCarValue(rs.getInt("carvalue"));
 				res.add(car);
 			}
 		} catch (Exception e) {
@@ -123,26 +125,26 @@ public class CarDao {
 		return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 	}
 
-	public ArrayList<Integer> getCarBidding(String carN){
+	public int getCarBidding(String carN){
 		String sql = "select bidding from parking.car_info where carnum=?";
 		Connection conn = DBUtil.getDBUtil().getConnection();
-		ArrayList<Integer> biddingIdArrayList =  new ArrayList<Integer>(); 
+		int biddingId = -1; 
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, carN);
 			ResultSet res = ps.executeQuery();
 			if(res!=null){
 				while(res.next()){
-				biddingIdArrayList.add(res.getInt("biddingid"));
+					biddingId = res.getInt("biddingid");
 				}
-				return biddingIdArrayList;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return biddingId;
 	}
+
 	public boolean vote(String carNum, String BiddingID) {
 		try {
 			String sql = "update car_info set BiddingID=? where CarNum=?";

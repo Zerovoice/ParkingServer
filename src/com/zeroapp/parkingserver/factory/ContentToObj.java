@@ -22,6 +22,7 @@ import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CarInfo;
 import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.parkingserver.common.User;
+import com.zeroapp.parkingserver.common.Voting;
 import com.zeroapp.tools.BmapPoint;
 import com.zeroapp.utils.Log;
 
@@ -78,6 +79,11 @@ public class ContentToObj {
 		return o;
 	}
 
+	public static Voting getVoting(String messageContent) {
+		Log.i("messageContent: " + messageContent);
+		Voting o = new Gson().fromJson(messageContent, Voting.class);
+		return o;
+	}
 	public static BmapPoint[] getCoordinatesOfArea(String jString) {
 		Gson gson = new Gson();
 		JsonParser parser = new JsonParser();

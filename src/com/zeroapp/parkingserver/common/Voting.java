@@ -27,6 +27,10 @@ package com.zeroapp.parkingserver.common;
  */
 
 public class Voting {
+	
+	public static String VOTING_DEFALUT_STRING_VALUE = "default";
+	public static String VOTING_DEFALUT_STRING_VALUE_ACTIVE = "active";
+	public static String VOTING_DEFALUT_STRING_VALUE_SLEEP = "sleep";
 
     /**
      * 该次Voting的ID
@@ -43,7 +47,7 @@ public class Voting {
     /**
      * TODO
      */
-    private String state = "";
+    private String state = VOTING_DEFALUT_STRING_VALUE;
 
     /**
      * <p>

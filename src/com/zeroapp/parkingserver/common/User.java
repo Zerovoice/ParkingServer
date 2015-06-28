@@ -66,7 +66,7 @@ public class User {
     /**
      * 用户账户余额
      */
-    private int accountBanlance = 0;
+    private double accountBanlance = 0;
 
     /**
      * <p>
@@ -310,7 +310,7 @@ public class User {
      * 
      * @return the accountBanlance.
      */
-    public int getAccountBanlance() {
+    public double getAccountBanlance() {
         return accountBanlance;
     }
 
@@ -325,7 +325,7 @@ public class User {
      * @param accountBanlance
      *            the accountBanlance to set.
      */
-    public void setAccountBanlance(int accountBanlance) {
+    public void setAccountBanlance(double accountBanlance) {
         this.accountBanlance = accountBanlance;
     }
 
