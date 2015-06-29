@@ -56,7 +56,8 @@ public class ParkingInfoDao {
 					paInfo.setCarNum(carNum);
 					paInfo.setLocationLatitude(res.getDouble("locationLatitude"));
 					paInfo.setLocationLongitude(res.getDouble("locationLongitude"));
-					paInfo.setMoney(res.getString("money"));
+					paInfo.setMoneyCost(res.getDouble("MoneyCost"));
+					paInfo.setMoneyEarning(res.getDouble("MoneyEarning"));
 					paInfo.setParkingID(res.getInt("parkingID"));
 					paInfo.setTimeEnd(CalculateTimeUtils.convert2long(res.getString("timeEnd")));
 					paInfo.setTimeStart(CalculateTimeUtils.convert2long(res.getString("timeStart")));

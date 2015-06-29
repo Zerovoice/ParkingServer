@@ -113,7 +113,7 @@ public class BusinessDao {
 
 	public Business getBusinessDetails(int businessid) {
 
-		String sql = "selecet * from  business where businessid=?";
+		String sql = "select * from parking.business where businessid=?";
 		try {
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);

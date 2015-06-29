@@ -55,8 +55,22 @@ public class ParkingInfo {
     /**
      * 该次停车记录的收入
      */
-    private String money = "0";
+    private double moneyEarning = 0;
+    private double moneyCost = 0;
     private int userId;
+    
+    public void setMoneyEarning(double m){
+    	this.moneyEarning = m;
+    }
+    public double getMoneyEarning(){
+    	return moneyEarning;
+    }
+    public void setMoneyCost(double m){
+    	this.moneyCost = m;
+    }
+    public double getMoneyCost(){
+    	return moneyCost;
+    }
     public void setUserId(int userId){
     	this.userId = userId;
     }
@@ -247,23 +261,23 @@ public class ParkingInfo {
      * 
      * @return the money.
      */
-    public String getMoney() {
-        return money;
-    }
-
-    /**
-     * <p>
-     * Title: TODO.
-     * </p>
-     * <p>
-     * Description: TODO.
-     * </p>
-     * 
-     * @param money
-     *            the money to set.
-     */
-    public void setMoney(String money) {
-        this.money = money;
-    }
+//    public String getMoney() {
+//        return money;
+//    }
+//
+//    /**
+//     * <p>
+//     * Title: TODO.
+//     * </p>
+//     * <p>
+//     * Description: TODO.
+//     * </p>
+//     * 
+//     * @param money
+//     *            the money to set.
+//     */
+//    public void setMoney(String money) {
+//        this.money = money;
+//    }
 
 }

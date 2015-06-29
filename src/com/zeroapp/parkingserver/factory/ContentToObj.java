@@ -93,9 +93,8 @@ public class ContentToObj {
 		}
 		BmapPoint[] bmapPoints = new BmapPoint[jArray.size()];
 		System.out.println("jArray: " + jArray);
-		for (JsonElement obj : jArray) {
-			int i = 0;
-
+		int i = 0;//MLGB,shabi bug.
+		for (JsonElement obj : jArray) {		
 			BmapPoint bp = gson.fromJson(obj, BmapPoint.class);
 			bmapPoints[i] = bp;
 			System.out.println("bmapPoints: " + bmapPoints[i].getLng());

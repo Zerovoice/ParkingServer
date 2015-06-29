@@ -33,7 +33,7 @@ public class AreaDao {
     	return al;
     }
 	public String getAreaName(int areaId){
-		String sql = "select area from parking.area_details where Id_p=?";
+		String sql = "select area from parking.areas_details where Id_p=?";
 		Connection conn = DBUtil.getDBUtil().getConnection();
 		PreparedStatement ps;
 		try {
@@ -53,7 +53,7 @@ public class AreaDao {
 		}
 	}
 	public String getAreaCoordinates(int areaId){
-			String sql = "select coordinates from parking.areas_details where Id_p=?";
+			String sql = "select coordinates from parking.areas_details where city=?";
 			try {     
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps;

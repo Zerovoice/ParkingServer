@@ -288,6 +288,9 @@ public class Worker {
 		int areaId = -1;
 		int biddingId;
 		ParkingInfo userBp = ContentToObj.getParkingInfo(m.getMessageContent());
+		Log.w("user gps value: "+userBp
+				.getLocationLongitude()+"hhhhh"+userBp
+				.getLocationLatitude());
 		BmapPoint pBmapPoint = new BmapPoint(userBp
 				.getLocationLongitude(), userBp
 				.getLocationLatitude());
@@ -300,20 +303,23 @@ public class Worker {
 		Log.w("Bmap points coordinates: "+bmapPointsCoordinatesS);
 		Business bs = businessDao.getBusinessDetails(businessId);
 		User userCom = userD.getUserInfosFormUserId(userComId);
-		BmapPoint[] bmapPointsCoordinates = ContentToObj
+		BmapPoint[] bmapPointsCoordinatesGPS = ContentToObj
 				.getCoordinatesOfArea(bmapPointsCoordinatesS);
-		if (GraphTool.isPointInRectangle(pBmapPoint, bmapPointsCoordinates)) {
+		if (GraphTool.isPointInPolygon(pBmapPoint, bmapPointsCoordinatesGPS))
+		 {
 			areaId = businessDao.getBusinessAreaId(businessId);
 
-			double profitUser = Tool.getBiddingProfit(bs.getTimeStart(),
-					bs.getTimeEnd(), CalculateTimeUtils.convert2String(userBp.getTimeStart()),
-					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), bs.getEarnings());
-			double profitCompany = Tool.getBiddingProfit(bs.getTimeStart(),
-					bs.getTimeEnd(),CalculateTimeUtils.convert2String(userBp.getTimeStart()),
-					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), bs.getCost());
+			double profitUser = 20;
+//					Tool.getBiddingProfit(bs.getTimeStart(),
+//					bs.getTimeEnd(), CalculateTimeUtils.convert2String(userBp.getTimeStart()),
+//					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), bs.getEarnings());
+			double profitCompany = 21;
+//					Tool.getBiddingProfit(bs.getTimeStart(),
+//					bs.getTimeEnd(),CalculateTimeUtils.convert2String(userBp.getTimeStart()),
+//					CalculateTimeUtils.convert2String(userBp.getTimeEnd()), bs.getCost());
 			if (userCom.getAccountBanlance() <= 0) {
 				m.setMessageResult(MessageConst.BUSINESS_CONSTANST.MONEY_EXPENDED);
-				businessDao.updateBusinessCostItem(-1, businessId);
+				userD.updateUserAccountItem(-1, userComId);
 				mBox.sendMessage(m);
 				return;
 			} else if (userCom.getAccountBanlance() <= profitCompany) {
