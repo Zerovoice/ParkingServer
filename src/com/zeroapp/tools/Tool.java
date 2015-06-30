@@ -1,6 +1,7 @@
 package com.zeroapp.tools;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import com.zeroapp.parking.message.MessageConst;
 
@@ -34,21 +35,33 @@ public class Tool {
             } 
         }
     }
-	public static double getBiddingProfit(String businessTimeStart,
-			String businessTimeEnd, String userTimeStart, String userTimeEnd,
-			double unitEarning) {
+	public static double getBiddingProfit(long businessTimeStart,
+			long businessTimeEnd, long userTimeStart, long userTimeEnd,
+			double unitEarning,int timeUnit) {
+			double profit;
+		if (!(CalculateTimeUtils.isParkingTimeAvailable(userTimeEnd,
+				businessTimeStart,1)&&CalculateTimeUtils.isParkingTimeAvailable(userTimeStart,
+						businessTimeEnd,-1))) {
+			return MessageConst.MessageResult.MSG_RESULT_PARKING_NOT_AVAILABLE;
 
-		if (CalculateTimeUtils.isEndTimeBiggerThanStartTime(userTimeEnd,
-				businessTimeStart)
-				&& CalculateTimeUtils.isEndTimeBiggerThanStartTime(
-						userTimeStart, userTimeStart)) {
-			return MessageConst.MessageResult.MSG_RESULT_FAIL;
-
-		} else {
-			return (unitEarning)
-					* (CalculateTimeUtils.getTimeDiff(userTimeStart,
-							userTimeEnd));
-
+		} else if ((userTimeStart < businessTimeStart)&&(userTimeEnd < businessTimeEnd)) {
+			profit = (unitEarning)
+			* (CalculateTimeUtils.getTimeDiff(businessTimeStart,
+					userTimeEnd));
+		}else if ((userTimeStart > businessTimeStart)&&(userTimeEnd > businessTimeEnd)) {
+			profit = (unitEarning)
+			* (CalculateTimeUtils.getTimeDiff(userTimeStart,
+					businessTimeEnd));
+		}else {
+			profit = (unitEarning)
+			* (CalculateTimeUtils.getTimeDiff(userTimeStart,
+					userTimeEnd));
 		}
+		return convertToFinalProfit(profit/timeUnit);
+	}
+	public static double convertToFinalProfit(double p){
+		BigDecimal bg = new BigDecimal(p);  
+		double finalProfit = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+		return finalProfit;
 	}
 }

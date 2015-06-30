@@ -84,7 +84,7 @@ public class CarDao {
 	 * @param u
 	 * @return
 	 */
-	public int addCar(CarInfo car) {
+	public String addCar(CarInfo car) {
 		try {
 			String sql = "insert into car_info (carnum,userid) values(?,?,?,?,?,?,?)";// TODO
 			Connection conn = DBUtil.getDBUtil().getConnection();
@@ -98,13 +98,13 @@ public class CarDao {
 			ps.setString(7, car.getParkingArea());
 			int rs = ps.executeUpdate();
 			if (rs > 0) {
-				return MessageConst.MessageResult.MSG_RESULT_SUCCESS;
+				return MessageConst.MessageResult.MSG_RESULT_SUCCESS_STRING;
 			}
-			return MessageConst.MessageResult.MSG_RESULT_FAIL;
+			return MessageConst.MessageResult.MSG_RESULT_FAIL_STRIGN;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_STRING;
 		}
-		return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 	}
 
 	public int changeCarState(String carNum, String newState) {

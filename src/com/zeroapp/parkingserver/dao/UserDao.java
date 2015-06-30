@@ -419,9 +419,10 @@ public class UserDao {
 		try {
 			if (profit == -1) {
 				sql = "update parking.user_info set AccountBanlance=0 where userid=?";
-			}
+			}else{
 				sql = "update parking.user_info set AccountBanlance=AccountBanlance-" + profit
 					+ "where userid=?";
+			}
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userid);
 			int res = ps.executeUpdate();

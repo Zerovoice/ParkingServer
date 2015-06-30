@@ -29,6 +29,7 @@ public class MessageConst {
     public class MessageResult {
 
         public static final int MSG_RESULT_FAIL = 0;
+        public static final int MSG_RESULT_PARKING_NOT_AVAILABLE = -1001;
         public static final int MSG_RESULT_SUCCESS = 1;
         public static final int SQL_OPREATION_FAILURE_INT = -1;
         public static final String SQL_QUERY_FAILURE="sqlexp";
@@ -99,6 +100,13 @@ public class MessageConst {
     	
     }
     public class BUSINESS_CONSTANST{
-    	public static final int MONEY_EXPENDED = 0;
+    	public static final String MONEY_EXPENDED = "nomeny";
+    	public static final String OUT_OF_MONEY = "outofmoney";
+    }
+    public class AREA_CONSTANST{
+    	public static final String NO_THIS_AREA = "noarea";
+    }
+    public class PARKING_CONSTANST{
+    	public static final String NO_MONEY_PARKING = "nomoneyparking";
     }
 }

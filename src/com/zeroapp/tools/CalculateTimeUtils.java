@@ -34,27 +34,27 @@ public class CalculateTimeUtils {
 		}
 	}
 
-	public static boolean isEndTimeBiggerThanStartTime(String startTime,
-			String endTime) {
-		if (convertTime(startTime).compareTo(convertTime(endTime)) == 0) {
-			return false;
-		} else {
-			return true;
+	public static boolean isParkingTimeAvailable(long userTime,
+			long businessTime,int timeTypeFlag) {
+		if(timeTypeFlag == 1){
+		return ((userTime > businessTime))? true:false;
+		}else {
+		return ((userTime < businessTime))? true:false;
 		}
 	}
 
-	public static long getTimeDiff(String startTime,String endTime){
-		   SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date dateStart = null;
-		Date dateEnd = null;
-		try {
-			dateStart = df.parse(startTime);
-			 dateEnd = df.parse(endTime);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return -1;
-		}
-		return dateEnd.getTime() - dateStart.getTime();
+	public static long getTimeDiff(long startTime,long endTime){
+//		   SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		Date dateStart = null;
+//		Date dateEnd = null;
+//		try {
+//			dateStart = df.parse(startTime);
+//			 dateEnd = df.parse(endTime);
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//			return -1;
+//		}
+		return endTime - startTime;
 	}
 	
 	public static long convert2long(String date) {
