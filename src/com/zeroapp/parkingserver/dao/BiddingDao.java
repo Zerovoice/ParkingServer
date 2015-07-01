@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Bidding;
+import com.zeroapp.parkingserver.common.BiddingContainer;
 import com.zeroapp.tools.CalculateTimeUtils;
 
 /**
@@ -169,11 +170,13 @@ public class BiddingDao {
 			return null;
 		}
 	}
-	public Bidding getBiddingDetailsFormBusinessId(int businessid){
-		Bidding bding =  new Bidding();
-		String sql = "select * from parking.bidding where businessid=?";
+	public BiddingContainer getBiddingDetailsFormBusinessId(int businessid,double earnings){
+		BiddingContainer bding =  new BiddingContainer();
 		Connection conn = DBUtil.getDBUtil().getConnection();
+		String sql = "select * from parking.bidding where businessid=?";
 		PreparedStatement ps;
+		
+		String sqlGetComName = "select account from parking.user_info where userid=?";
 		try {
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, businessid);
@@ -181,11 +184,18 @@ public class BiddingDao {
 			if(res!=null){
 				while(res.next()){
 					bding.setBusinessID(businessid);
+					bding.setEarnings(earnings);
 					bding.setBiddingID(res.getInt("biddingid"));
 					bding.setTimeEnd(res.getString("timeend"));
 					bding.setTimeStart(res.getString("timestart"));
 					bding.setUserID(res.getInt("userid"));
 				}
+			}
+			PreparedStatement psComName = conn.prepareStatement(sqlGetComName);
+			psComName.setInt(1, bding.getUserID());
+			ResultSet rs = psComName.executeQuery();
+			while(rs.next()){
+				bding.setComName(rs.getString("account"));
 			}
 			return bding;
 		} catch (SQLException e) {

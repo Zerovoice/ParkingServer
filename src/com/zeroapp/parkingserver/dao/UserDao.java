@@ -103,6 +103,31 @@ public class UserDao {
 		}
 		return res;
 	}
+	
+	public User getUserInfoByPhoneNum(String pNum) {
+		User res = new User();
+		try {
+			String sql = "select * from user_info where phoneNum=?";
+			Connection conn = DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, pNum);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				res.setUserID(rs.getInt("UserID"));
+				res.setAccount(rs.getString("account"));
+				res.setPassword(rs.getString("Password"));
+				res.setName(rs.getString("Name"));
+				res.setIdentityNum(rs.getString("IdentityNum"));
+				res.setSex(rs.getInt("Sex"));
+				res.setPhoneNum(rs.getString("PhoneNum"));
+				res.setUserType(rs.getString("UserType"));
+				res.setAccountBanlance(rs.getInt("AccountBanlance"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
 
 	/**
 	 * <p>

@@ -1,6 +1,5 @@
 package com.zeroapp.parkingserver.common;
 
-import java.util.concurrent.CompletableFuture;
 
 public class BiddingContainer extends Bidding{
 			private String areaName;

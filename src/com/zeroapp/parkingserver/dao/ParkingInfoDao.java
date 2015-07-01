@@ -42,18 +42,18 @@ public class ParkingInfoDao {
 			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
 	}
-	public ArrayList<ParkingInfo> getParkingInfoDetails(String carNum){
+	public ArrayList<ParkingInfo> getParkingInfoDetails(int userId){
 		ArrayList<ParkingInfo> paArrayList =  new ArrayList<ParkingInfo>();
-		String sql = "select * from parking.parking_info where carnum=?";
+		String sql = "select * from parking.parking_info where userid=?";
 		try {
 		Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, carNum);
+			ps.setInt(1, userId);
 			ResultSet res = ps.executeQuery();
 			if(res!=null){
 				while(res.next()){
 					ParkingInfo paInfo = new ParkingInfo();
-					paInfo.setCarNum(carNum);
+					paInfo.setCarNum(res.getString("carnum"));
 					paInfo.setLocationLatitude(res.getDouble("locationLatitude"));
 					paInfo.setLocationLongitude(res.getDouble("locationLongitude"));
 					paInfo.setMoneyCost(res.getDouble("MoneyCost"));

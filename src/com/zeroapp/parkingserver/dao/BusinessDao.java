@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Bidding;
+import com.zeroapp.parkingserver.common.BiddingContainer;
 import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.utils.Log;
 
@@ -50,16 +51,16 @@ public class BusinessDao {
 	 * @param time
 	 * @return
 	 */
-	public ArrayList<Bidding> getBiddingDetailsFromBusiness(int areaid) {
+	public ArrayList<BiddingContainer> getBiddingDetailsFromBusiness(int areaid) {
 		ArrayList<Business> businessList = new ArrayList<Business>();
-		ArrayList<Bidding> biddingList =  new ArrayList<Bidding>();
+		ArrayList<BiddingContainer> biddingList =  new ArrayList<BiddingContainer>();
 		
 		BiddingDao biddingDao = new BiddingDao();
 			businessList = getAvailableBusinessForCom(areaid);
 			
 			for(Business b:businessList){
-				Bidding bding = new Bidding();
-				bding = biddingDao.getBiddingDetailsFormBusinessId(b.getBusinessID());
+				BiddingContainer bding = new BiddingContainer();
+				bding = biddingDao.getBiddingDetailsFormBusinessId(b.getBusinessID(),b.getEarnings());
 				biddingList.add(bding);
 			}
 			return biddingList;
@@ -204,9 +205,10 @@ public class BusinessDao {
 				b.setTimeStart(rs.getString("timeStart"));
 				resList.add(b);
 			}
+			return resList;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
-		return resList;
 	}
 }

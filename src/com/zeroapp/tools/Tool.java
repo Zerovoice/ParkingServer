@@ -39,12 +39,7 @@ public class Tool {
 			long businessTimeEnd, long userTimeStart, long userTimeEnd,
 			double unitEarning,int timeUnit) {
 			double profit;
-		if (!(CalculateTimeUtils.isParkingTimeAvailable(userTimeEnd,
-				businessTimeStart,1)&&CalculateTimeUtils.isParkingTimeAvailable(userTimeStart,
-						businessTimeEnd,-1))) {
-			return MessageConst.MessageResult.MSG_RESULT_PARKING_NOT_AVAILABLE;
-
-		} else if ((userTimeStart < businessTimeStart)&&(userTimeEnd < businessTimeEnd)) {
+			if ((userTimeStart < businessTimeStart)&&(userTimeEnd < businessTimeEnd)) {
 			profit = (unitEarning)
 			* (CalculateTimeUtils.getTimeDiff(businessTimeStart,
 					userTimeEnd));
@@ -63,5 +58,9 @@ public class Tool {
 		BigDecimal bg = new BigDecimal(p);  
 		double finalProfit = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 		return finalProfit;
+	}
+	public static boolean isParkingTimeAvailable(long businessTimeStart,
+			long businessTimeEnd, long userTimeStart, long userTimeEnd){
+		return ((userTimeStart > businessTimeEnd)||(userTimeEnd < businessTimeStart))? false:true;
 	}
 }

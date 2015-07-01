@@ -50,7 +50,9 @@ public class MessageConst {
 
         // Message types sent from Client by admin
         public static final int MSG_TYPE_ADMIN_SIGN_IN = 1000;
-
+        public static final int MSG_TYPE_ADMIN_SEARCH_USER = 1001;
+        public static final int MSG_TYPE_ADMIN_UPFATE_USERINFO = 1002;
+        public static final int MSG_TYPE_ADMIN_UPFATE_CAR_STATE = 1003;
         // Message types sent from Client by company
         public static final int MSG_TYPE_COMPANY_SIGN_IN = 2000;
         public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_COST = 2001;
@@ -59,6 +61,7 @@ public class MessageConst {
         public static final int MSG_TYPE_COMPANY_UPDATE_ITEM_TIME_START =2004;
         public static final int MSG_TYPE_COMPANY_LIST_BUSINESS =2005;
         public static final int MSG_TYPE_COMPANY_CREATE_BIDDING = 2006;
+        public static final int MSG_TYPE_COMPANY_LIST_COST = 2007;
 
         // Message types sent from Client by normal user
         public static final int MSG_TYPE_USER_SIGN_IN = 3000;
@@ -107,6 +110,7 @@ public class MessageConst {
     	public static final String NO_THIS_AREA = "noarea";
     }
     public class PARKING_CONSTANST{
-    	public static final String NO_MONEY_PARKING = "nomoneyparking";
+    	public static final String NO_ENOUGH_MONEY_PARKING = "nomoneyparking";
+    	public static final String UNAVAILABLE_PARKING = "unavailable";
     }
 }

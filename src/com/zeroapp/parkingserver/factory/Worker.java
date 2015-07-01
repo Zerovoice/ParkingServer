@@ -22,6 +22,7 @@ import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Area;
 import com.zeroapp.parkingserver.common.Bidding;
+import com.zeroapp.parkingserver.common.BiddingContainer;
 import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CarInfo;
 import com.zeroapp.parkingserver.common.ParkingInfo;
@@ -104,6 +105,15 @@ public class Worker {
 		case MessageConst.MessageType.MSG_TYPE_COMPANY_LIST_BUSINESS:
 			getBusinessList(m);
 			break;
+		case MessageConst.MessageType.MSG_TYPE_ADMIN_SEARCH_USER:
+			getUserInfoForAdmin(m);
+			break;
+		case MessageConst.MessageType.MSG_TYPE_ADMIN_UPFATE_USERINFO:// userid,name,pnum,idnum
+
+			break;
+		case MessageConst.MessageType.MSG_TYPE_ADMIN_UPFATE_CAR_STATE:
+
+			break;
 		default:
 			break;
 		}
@@ -172,7 +182,8 @@ public class Worker {
 
 	private void addCars(ClientServerMessage m) {
 		CarDao cd = new CarDao();
-		String resString = cd.addCar(ContentToObj.getCarInfo(m.getMessageContent()));
+		String resString = cd.addCar(ContentToObj.getCarInfo(m
+				.getMessageContent()));
 		m.setMessageContent(resString);
 		mBox.sendMessage(m);
 	}
@@ -220,7 +231,7 @@ public class Worker {
 	 */
 	private void listBiddings(ClientServerMessage m) {
 		if (m.getMessageContent().equals("qingdao")) {
-			ArrayList<Bidding> biddingArrayList = new ArrayList<Bidding>();
+			ArrayList<BiddingContainer> biddingArrayList = new ArrayList<BiddingContainer>();
 			AreaDao ad = new AreaDao();
 			BusinessDao bd = new BusinessDao();
 			// CityDao c = new CityDao();
@@ -266,10 +277,13 @@ public class Worker {
 	 * 
 	 */
 	private void listParingRecord(ClientServerMessage m) {
-		if (m.getMessageContent().equals("money")) {
-			Log.i("back-->Result: "
-					+ MessageConst.MessageResult.MSG_RESULT_SUCCESS);
-			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		ParkingInfoDao pDao = new ParkingInfoDao();
+		ArrayList<ParkingInfo> parkingList = pDao.getParkingInfoDetails(ContentToObj.getUser(m.getMessageContent()).getUserID());
+		if(parkingList!=null){
+		m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		m.setMessageContent(ObjToContent.getContent(parkingList));
+		}else{
+		m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
 		mBox.sendMessage(m);
 	}
@@ -300,26 +314,29 @@ public class Worker {
 		User userCom = userD.getUserInfosFormUserId(userComId);
 		BmapPoint[] bmapPointsCoordinatesGPS = ContentToObj
 				.getCoordinatesOfArea(bmapPointsCoordinatesS);
+
+		long businessTimes = CalculateTimeUtils.convert2long(bs.getTimeStart());
+		long businessTimeE = CalculateTimeUtils.convert2long(bs.getTimeEnd());
+		if (!Tool.isParkingTimeAvailable(businessTimes, businessTimeE,
+				userBp.getTimeStart(), userBp.getTimeEnd())) {
+			{
+				m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+				m.setMessageContent(MessageConst.PARKING_CONSTANST.UNAVAILABLE_PARKING);
+			}
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_PARKING_NOT_AVAILABLE);
+			m.setMessageContent(MessageConst.PARKING_CONSTANST.NO_ENOUGH_MONEY_PARKING);
+			mBox.sendMessage(m);
+			return;
+		}
 		if (GraphTool.isPointInPolygon(pBmapPoint, bmapPointsCoordinatesGPS)) {
 			areaId = businessDao.getBusinessAreaId(businessId);
-			
-			double profitUser = Tool.getBiddingProfit(
-					CalculateTimeUtils.convert2long(bs.getTimeStart()),
-					CalculateTimeUtils.convert2long(bs.getTimeEnd()),
-					userBp.getTimeStart(), userBp.getTimeEnd(),
-					bs.getEarnings(),3600000);
-			if(profitUser == MessageConst.MessageResult.MSG_RESULT_PARKING_NOT_AVAILABLE){
-				m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_PARKING_NOT_AVAILABLE);
-				m.setMessageContent(MessageConst.PARKING_CONSTANST.NO_MONEY_PARKING);
-				mBox.sendMessage(m);
-				System.out.println("profitUser "+profitUser);
-				return;
-			}
-			double profitCompany = Tool.getBiddingProfit(
-					CalculateTimeUtils.convert2long(bs.getTimeStart()),
-					CalculateTimeUtils.convert2long(bs.getTimeEnd()),
-					userBp.getTimeStart(), userBp.getTimeEnd(),
-					bs.getCost(),3600000);
+
+			double profitUser = Tool.getBiddingProfit(businessTimes,
+					businessTimeE, userBp.getTimeStart(), userBp.getTimeEnd(),
+					bs.getEarnings(), 3600000);
+			double profitCompany = Tool.getBiddingProfit(businessTimes,
+					businessTimeE, userBp.getTimeStart(), userBp.getTimeEnd(),
+					bs.getCost(), 3600000);
 			if (userCom.getAccountBanlance() <= 0) {
 				m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 				m.setMessageContent(MessageConst.BUSINESS_CONSTANST.MONEY_EXPENDED);
@@ -344,8 +361,7 @@ public class Worker {
 					CalculateTimeUtils.convert2String(userBp.getTimeStart()),
 					CalculateTimeUtils.convert2String(userBp.getTimeEnd()),
 					profitUser, profitCompany, userBp.getUserId());
-		}
-		if (areaId == -1) {
+		}else{
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 			m.setMessageContent(MessageConst.AREA_CONSTANST.NO_THIS_AREA);
 		}
@@ -398,6 +414,19 @@ public class Worker {
 			m.setMessageType(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 		} else {
 			m.setMessageType(MessageConst.MessageResult.MSG_RESULT_FAIL);
+		}
+		mBox.sendMessage(m);
+	}
+
+	private void getUserInfoForAdmin(ClientServerMessage m){
+		UserDao ud = new UserDao();
+		User user= new User();
+		user = ud.getUserInfoByPhoneNum(ContentToObj.getUser(m
+				.getMessageContent()).getPhoneNum());
+		if(user!=null){
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		}else {
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
 		mBox.sendMessage(m);
 	}

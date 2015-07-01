@@ -33,6 +33,7 @@ public abstract class AMessage implements Serializable {
     private int mMessageType = -1;
     private String mMessageContent = "";
     private long mMessageSendTime = 0;
+    private String parameters;
 
     public int getMessageResult() {
         return mMessageResult;
@@ -64,6 +65,12 @@ public abstract class AMessage implements Serializable {
 
     public void setMessageSendTime(long messageSendTime) {
         mMessageSendTime = messageSendTime;
+    }
+    public void setMessageParameters(String para){
+    	this.parameters = para;
+    }
+    public String getMessageParameters(){
+    	return parameters;
     }
 
 }
