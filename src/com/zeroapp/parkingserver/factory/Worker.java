@@ -13,12 +13,20 @@
 
 package com.zeroapp.parkingserver.factory;
 
+import java.lang.reflect.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Area;
+import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.BiddingContainer;
 import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CarInfo;
@@ -30,6 +38,7 @@ import com.zeroapp.parkingserver.dao.BiddingDao;
 import com.zeroapp.parkingserver.dao.BusinessDao;
 import com.zeroapp.parkingserver.dao.CarDao;
 import com.zeroapp.parkingserver.dao.CityDao;
+import com.zeroapp.parkingserver.dao.DBUtil;
 import com.zeroapp.parkingserver.dao.ParkingInfoDao;
 import com.zeroapp.parkingserver.dao.UserDao;
 import com.zeroapp.parkingserver.dao.VotingDao;
@@ -106,14 +115,15 @@ public class Worker {
 			getUserInfoForAdmin(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_ADMIN_UPFATE_USERINFO:// userid,name,pnum,idnum
-
+			updateUserInfoByAdmin(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_ADMIN_UPFATE_CAR_STATE:
 			updateUserCarState(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_COMPANY_LIST_COST:
-			
+
 			break;
+		case MessageConst.MessageType.MSG_TYPE_COMPANY_LIST_MY_BIDDING:
 		default:
 			break;
 		}
@@ -240,13 +250,15 @@ public class Worker {
 			ArrayList<CommercialDetails> bCommercialDetailsList = new ArrayList<CommercialDetails>();
 			ArrayList<Area> areaList = areaDao.areaIdArrayList(cityId);
 			for (Area area : areaList) {
-				CommercialDetails bCommercialDetails = bd.getAvailableBusinessForClients(area);
+				CommercialDetails bCommercialDetails = bd
+						.getAvailableBusinessForClients(area);
 				if (bCommercialDetails != null) {
 					bCommercialDetailsList.add(bCommercialDetails);
 				}
 			}
 			for (CommercialDetails b : bCommercialDetailsList) {
-				biddingArrayList.add(biddingDao.getBiddingDetailsFormBusiness(b));
+				biddingArrayList.add(biddingDao
+						.getBiddingDetailsFormBusiness(b));
 			}
 			Log.i("back-->Result: "
 					+ MessageConst.MessageResult.MSG_RESULT_SUCCESS);
@@ -287,9 +299,9 @@ public class Worker {
 	 */
 	private void listParingRecord(ClientServerMessage m) {
 		ParkingInfoDao pDao = new ParkingInfoDao();
-		ArrayList<ParkingInfo> parkingList = pDao
-				.getParkingInfoDetails(ContentToObj.getUser(
-						m.getMessageContent()).getUserID(),m.getMessageParameters());
+		ArrayList<ParkingInfo> parkingList = pDao.getParkingInfoDetails(
+				ContentToObj.getUser(m.getMessageContent()).getUserID(),
+				m.getMessageParameters());
 		if (parkingList != null) {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 			m.setMessageContent(ObjToContent.getContent(parkingList));
@@ -405,7 +417,7 @@ public class Worker {
 	}
 
 	private void getBusinessList(ClientServerMessage m) {
-		if (m.getMessageContent() == "qingdao") {
+		if (m.getMessageContent().equals("qingdao")) {
 			CityDao cityDao = new CityDao();
 			AreaDao areaDao = new AreaDao();
 			int cityId = cityDao.getCityId("qingdao");
@@ -413,7 +425,8 @@ public class Worker {
 			ArrayList<Area> areaList = areaDao.areaIdArrayList(cityId);
 			BusinessDao bd = new BusinessDao();
 			for (Area area : areaList) {
-				CommercialDetails bCommercialDetails = bd.getAvailableBusinessForClients(area);
+				CommercialDetails bCommercialDetails = bd
+						.getAvailableBusinessForClients(area);
 				if (bCommercialDetails != null) {
 					bCommercialDetailsList.add(bCommercialDetails);
 				}
@@ -443,11 +456,13 @@ public class Worker {
 				m.getMessageContent()).getPhoneNum());
 		if (user != null) {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+			m.setMessageContent(ObjToContent.getContent(user));
 		} else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
 		mBox.sendMessage(m);
 	}
+
 	private void updateUserCarState(ClientServerMessage m) {
 		CarInfo carIn = ContentToObj.getCarInfo(m.getMessageContent());
 		CarDao ca = new CarDao();
@@ -459,7 +474,47 @@ public class Worker {
 		}
 		mBox.sendMessage(m);
 	}
-	private void listCostForMoneyLord(ClientServerMessage m){
-		
+
+	private void listCostForMoneyLord(ClientServerMessage m) {
+		VotingDao votingdao = new VotingDao();
+		ParkingInfoDao parkingInfoDao = new ParkingInfoDao();
+		BiddingDao biddingDao = new BiddingDao();
+		User u = ContentToObj.getUser(m.getMessageContent());
+		ArrayList<Bidding> biddingList = biddingDao.getUserBiddings(u
+				.getUserID());
+		ArrayList<String> carNumArrayList = new ArrayList<String>();
+		String sql = "select carnum from parking.voting where biddingid=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			if (biddingList != null) {
+				for (Bidding b : biddingList) {
+					ps.setInt(1, b.getBiddingID());
+					ResultSet rs = ps.executeQuery();
+					if (rs != null) {
+						while (rs.next()) {
+
+						}
+					}
+				}
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
+	private void updateUserInfoByAdmin(ClientServerMessage m) {
+		UserDao ud = new UserDao();
+		int rsInt = ud.updateUserItems(ContentToObj.getUser(m
+				.getMessageContent()));
+		m.setMessageResult(rsInt);
+		if (rsInt == MessageConst.MessageResult.MSG_RESULT_FAIL) {
+			m.setMessageContent(MessageConst.USER_CONSTANST.UPDATE_FAILE);
+		} else {
+			m.setMessageContent(MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_STRING);
+		}
+	}
+
 }

@@ -1,10 +1,10 @@
 package com.zeroapp.parkingserver.common;
 
-
 public class BiddingContainer extends Bidding{
 			private String areaName;
 			private double earnings;
 			private String companyName;
+			private double cost;
 			
 			public String getAreaName(){
 				return areaName;
@@ -23,5 +23,11 @@ public class BiddingContainer extends Bidding{
 			}
 			public void setComName(String cn){
 				this.companyName = cn;
+			}
+			public void setCost(double e){
+				this.cost = e;
+			}
+			public double getCost(){
+				return cost;
 			}
 }

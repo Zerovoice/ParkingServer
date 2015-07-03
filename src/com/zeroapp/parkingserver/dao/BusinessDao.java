@@ -162,15 +162,14 @@ public class BusinessDao {
 		}
 	}
 	public CommercialDetails getAvailableBusinessForClients(Area area) {
-		CommercialDetails bCommercialDetails=new CommercialDetails();
 		try {
+			CommercialDetails b = new CommercialDetails();
 			String sql = "select * from parking.business where areaid=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, area.getAreaId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {// TODO 数据类型需要修改
-				CommercialDetails b = new CommercialDetails();
 				b.setAreaId(area.getAreaId());
 				b.setBusinessID(rs.getInt("businessid"));
 				b.setCost(rs.getDouble("cost"));
@@ -179,9 +178,9 @@ public class BusinessDao {
 				b.setMaxUserCount(rs.getInt("maxUserCount"));
 				b.setTimeEnd(rs.getString("timeend"));
 				b.setTimeStart(rs.getString("timeStart"));
-				b.setAreaName(rs.getString("area"));
+				b.setAreaName(area.getAreaName());
 			}
-			return bCommercialDetails;
+			return b;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

@@ -62,6 +62,7 @@ public class MessageConst {
         public static final int MSG_TYPE_COMPANY_LIST_BUSINESS =2005;
         public static final int MSG_TYPE_COMPANY_CREATE_BIDDING = 2006;
         public static final int MSG_TYPE_COMPANY_LIST_COST = 2007;
+        public static final int MSG_TYPE_COMPANY_LIST_MY_BIDDING = 2008;
 
         // Message types sent from Client by normal user
         public static final int MSG_TYPE_USER_SIGN_IN = 3000;
@@ -100,6 +101,7 @@ public class MessageConst {
     public class USER_CONSTANST{
     	public static final int ALREADY_EXIST = -1;
     	public static final int NOT_EXIST = 1;
+    	public static final String UPDATE_FAILE = "updatefail";
     	
     }
     public class BUSINESS_CONSTANST{
@@ -112,5 +114,8 @@ public class MessageConst {
     public class PARKING_CONSTANST{
     	public static final String NO_ENOUGH_MONEY_PARKING = "nomoneyparking";
     	public static final String UNAVAILABLE_PARKING = "unavailable";
+    }
+    public class SQL_CONSTANST{
+    	public static final String SQL_EXP = "sqlexception";
     }
 }

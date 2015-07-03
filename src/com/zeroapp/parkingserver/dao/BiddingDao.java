@@ -13,6 +13,7 @@
 
 package com.zeroapp.parkingserver.dao;
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,6 +27,7 @@ import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.BiddingContainer;
 import com.zeroapp.parkingserver.common.Business;
 import com.zeroapp.parkingserver.common.CommercialDetails;
+import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.tools.CalculateTimeUtils;
 
 /**
@@ -205,5 +207,30 @@ public class BiddingDao {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	public ArrayList<BiddingContainer> getBiddingContainerListFormUserId(User u){
+		ArrayList<BiddingContainer> biddingContainersList = new ArrayList<BiddingContainer>();
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		ArrayList<Bidding> biddingList;
+		ArrayList<Business> businesList =  new ArrayList<Business>();
+		BusinessDao businessDao = new BusinessDao();
+		AreaDao areaDao =  new AreaDao();
+		PreparedStatement ps;
+		String sqlAreaId = "select areaid from parking.business where businessid=?";
+		String sqlAreaName = "select area from parking.business where areaid=?";
+		
+			biddingList = getUserBiddings(u.getUserID());
+			for(Bidding bidding:biddingList){
+				BiddingContainer biddingContainer = new BiddingContainer();
+				Business business = businessDao.getBusinessDetails(bidding.getBusinessID());
+				String areaName = areaDao.getAreaName(business.getAreaId());
+				biddingContainer.setBiddingID(bidding.getBiddingID());
+				biddingContainer.setBusinessID(business.getBusinessID());
+				biddingContainer.setCost(business.getCost());
+				biddingContainer.setAreaName(areaName);
+				businesList.add(businessDao.getBusinessDetails(bidding.getBusinessID()));
+				biddingContainersList.add(biddingContainer);
+			}
+			return biddingContainersList;
 	}
 }

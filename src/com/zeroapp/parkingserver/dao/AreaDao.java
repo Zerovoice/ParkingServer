@@ -114,7 +114,7 @@ public class AreaDao {
     public ArrayList<Area> areaIdArrayList(int citycode){
 		ArrayList<Area> areaList = new ArrayList<Area>();
 	try {
-        String sql = "select Id_p from parking.areas_details where city=?";
+        String sql = "select * from parking.areas_details where city=?";
 		Connection conn = DBUtil.getDBUtil().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1,citycode );
@@ -129,9 +129,10 @@ public class AreaDao {
 				areaList.add(area);
 			}
 		}
+		return areaList;
 	} catch (Exception e) {
 		e.printStackTrace();
+		return null;
 	}
-	return areaList;
 }
 }

@@ -460,4 +460,17 @@ public class UserDao {
 			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
 	}
+	public int updateUserItems(User u) {
+		String sql = "UPDATE `parking`.`user_info` SET `Account`=?, `Password`=?, `Name`=?, `Sex`=?, `PhoneNum`=?, `UserType`=?, `AccountBanlance`=? WHERE `UserID`='2'";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			int resInt = ps.executeUpdate();
+			return resInt;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
+		}
+	}
 }
