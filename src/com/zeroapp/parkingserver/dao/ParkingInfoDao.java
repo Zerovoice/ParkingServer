@@ -12,6 +12,7 @@ import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.ParkingInfo;
 import com.zeroapp.tools.BmapPoint;
 import com.zeroapp.tools.CalculateTimeUtils;
+import com.zeroapp.tools.Tool;
 
 public class ParkingInfoDao {
 	public int creatParkingInfo(String carNum, double longitude,
@@ -42,13 +43,19 @@ public class ParkingInfoDao {
 			return MessageConst.MessageResult.SQL_OPREATION_FAILURE_INT;
 		}
 	}
-	public ArrayList<ParkingInfo> getParkingInfoDetails(int userId){
+	public ArrayList<ParkingInfo> getParkingInfoDetails(int userId,String range){
 		ArrayList<ParkingInfo> paArrayList =  new ArrayList<ParkingInfo>();
-		String sql = "select * from parking.parking_info where userid=?";
+		String sql = "select * from parking.parking_info where userid=? limit ?,?";
+		int intRange[] = Tool.getIntRangeFromString(range);
+		if(intRange == null){
+			sql = "select * from parking.parking_info where userid=?";
+		}
 		try {
 		Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
+			ps.setInt(2, intRange[0]);
+			ps.setInt(3, intRange[1]);
 			ResultSet res = ps.executeQuery();
 			if(res!=null){
 				while(res.next()){

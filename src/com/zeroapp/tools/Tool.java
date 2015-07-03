@@ -63,4 +63,17 @@ public class Tool {
 			long businessTimeEnd, long userTimeStart, long userTimeEnd){
 		return ((userTimeStart > businessTimeEnd)||(userTimeEnd < businessTimeStart))? false:true;
 	}
+	public static int[] getIntRangeFromString(String s){
+		try {
+			int[] intR = new int[s.split(",").length];
+			int rangeStart = Integer.parseInt(s.split(",")[0]);
+			int rangeEnd = Integer.parseInt(s.split(",")[1]);
+			intR[0]=rangeStart;
+			intR[1]=rangeEnd;
+			return intR;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

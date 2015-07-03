@@ -24,6 +24,8 @@ import java.util.List;
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.BiddingContainer;
+import com.zeroapp.parkingserver.common.Business;
+import com.zeroapp.parkingserver.common.CommercialDetails;
 import com.zeroapp.tools.CalculateTimeUtils;
 
 /**
@@ -170,7 +172,7 @@ public class BiddingDao {
 			return null;
 		}
 	}
-	public BiddingContainer getBiddingDetailsFormBusinessId(int businessid,double earnings){
+	public BiddingContainer getBiddingDetailsFormBusiness(CommercialDetails b){
 		BiddingContainer bding =  new BiddingContainer();
 		Connection conn = DBUtil.getDBUtil().getConnection();
 		String sql = "select * from parking.bidding where businessid=?";
@@ -179,16 +181,17 @@ public class BiddingDao {
 		String sqlGetComName = "select account from parking.user_info where userid=?";
 		try {
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, businessid);
+			ps.setInt(1, b.getBusinessID());
 			ResultSet res = ps.executeQuery();
 			if(res!=null){
 				while(res.next()){
-					bding.setBusinessID(businessid);
-					bding.setEarnings(earnings);
+					bding.setBusinessID(b.getBusinessID());
+					bding.setEarnings(b.getEarnings());
 					bding.setBiddingID(res.getInt("biddingid"));
 					bding.setTimeEnd(res.getString("timeend"));
 					bding.setTimeStart(res.getString("timestart"));
 					bding.setUserID(res.getInt("userid"));
+					bding.setAreaName(b.getAreaName());
 				}
 			}
 			PreparedStatement psComName = conn.prepareStatement(sqlGetComName);

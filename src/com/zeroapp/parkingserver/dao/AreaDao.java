@@ -111,4 +111,27 @@ public class AreaDao {
 		}
 		
 	}
+    public ArrayList<Area> areaIdArrayList(int citycode){
+		ArrayList<Area> areaList = new ArrayList<Area>();
+	try {
+        String sql = "select Id_p from parking.areas_details where city=?";
+		Connection conn = DBUtil.getDBUtil().getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setInt(1,citycode );
+		ResultSet rs = ps.executeQuery();
+		if (rs != null) {
+			while(rs.next()){
+				Area area = new Area();
+				area.setAreaId(rs.getInt("Id_p"));
+				area.setAreaName(rs.getString("area"));
+				area.setCityId(rs.getInt("city"));
+//				area.setBmapPoints("coordinates");
+				areaList.add(area);
+			}
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return areaList;
+}
 }

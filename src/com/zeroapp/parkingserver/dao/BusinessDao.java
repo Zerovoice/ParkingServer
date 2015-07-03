@@ -21,9 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.zeroapp.parking.message.MessageConst;
+import com.zeroapp.parkingserver.common.Area;
 import com.zeroapp.parkingserver.common.Bidding;
 import com.zeroapp.parkingserver.common.BiddingContainer;
 import com.zeroapp.parkingserver.common.Business;
+import com.zeroapp.parkingserver.common.CommercialDetails;
 import com.zeroapp.utils.Log;
 
 /**
@@ -39,32 +41,6 @@ import com.zeroapp.utils.Log;
  */
 
 public class BusinessDao {
-
-	/**
-	 * <p>
-	 * Title: getAvailableBusiness.
-	 * </p>
-	 * <p>
-	 * Description: 获得当前时间段内可用的Business列表.
-	 * </p>
-	 * 
-	 * @param time
-	 * @return
-	 */
-	public ArrayList<BiddingContainer> getBiddingDetailsFromBusiness(int areaid) {
-		ArrayList<Business> businessList = new ArrayList<Business>();
-		ArrayList<BiddingContainer> biddingList =  new ArrayList<BiddingContainer>();
-		
-		BiddingDao biddingDao = new BiddingDao();
-			businessList = getAvailableBusinessForCom(areaid);
-			
-			for(Business b:businessList){
-				BiddingContainer bding = new BiddingContainer();
-				bding = biddingDao.getBiddingDetailsFormBusinessId(b.getBusinessID(),b.getEarnings());
-				biddingList.add(bding);
-			}
-			return biddingList;
-	}
 
 	public int createBusiness(String area, int maxuser, int maxtenderer,
 			double cost, double earnings, String timestart, String timeend,
@@ -185,17 +161,17 @@ public class BusinessDao {
 			return MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_INT;
 		}
 	}
-	public ArrayList<Business> getAvailableBusinessForCom(int areaid) {
-		ArrayList<Business> resList = new ArrayList<Business>();
+	public CommercialDetails getAvailableBusinessForClients(Area area) {
+		CommercialDetails bCommercialDetails=new CommercialDetails();
 		try {
 			String sql = "select * from parking.business where areaid=?";
 			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setInt(1, areaid);
+			ps.setInt(1, area.getAreaId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {// TODO 数据类型需要修改
-				Business b = new Business();
-				b.setAreaId(areaid);
+				CommercialDetails b = new CommercialDetails();
+				b.setAreaId(area.getAreaId());
 				b.setBusinessID(rs.getInt("businessid"));
 				b.setCost(rs.getDouble("cost"));
 				b.setEarnings(rs.getDouble("Earnings"));
@@ -203,9 +179,9 @@ public class BusinessDao {
 				b.setMaxUserCount(rs.getInt("maxUserCount"));
 				b.setTimeEnd(rs.getString("timeend"));
 				b.setTimeStart(rs.getString("timeStart"));
-				resList.add(b);
+				b.setAreaName(rs.getString("area"));
 			}
-			return resList;
+			return bCommercialDetails;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
