@@ -13,9 +13,6 @@
 
 package com.zeroapp.parkingserver.dao;
 
-import io.netty.handler.codec.http.HttpContentEncoder.Result;
-
-import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,11 +31,15 @@ import com.zeroapp.parkingserver.common.Voting;
  */
 
 public class VotingDao {
+	private Connection conn;
+	public VotingDao(Connection connection){
+		this.conn = connection;
+	}
 	public Voting getVoting(String carN){
 		String sql = "select * from parking.voting where CarNum=?";
 		Voting voting = new Voting();
 		try {
-		Connection conn =  DBUtil.getDBUtil().getConnection();
+//		Connection conn =  DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, carN);
 			ResultSet res = ps.executeQuery();
@@ -60,7 +61,7 @@ public class VotingDao {
 	public int createVoting(Voting v){
 		String sql = "insert into parking.voting values(null,?,?,?)";
 		try {
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, v.getBiddingID());
 			ps.setString(2, v.getCarNum());

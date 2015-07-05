@@ -13,7 +13,6 @@
 
 package com.zeroapp.parkingserver.factory;
 
-import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,7 +20,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
 
 import com.zeroapp.parking.message.ClientServerMessage;
 import com.zeroapp.parking.message.MessageConst;
@@ -38,6 +36,7 @@ import com.zeroapp.parkingserver.dao.BiddingDao;
 import com.zeroapp.parkingserver.dao.BusinessDao;
 import com.zeroapp.parkingserver.dao.CarDao;
 import com.zeroapp.parkingserver.dao.CityDao;
+import com.zeroapp.parkingserver.dao.DBCPBean;
 import com.zeroapp.parkingserver.dao.DBUtil;
 import com.zeroapp.parkingserver.dao.ParkingInfoDao;
 import com.zeroapp.parkingserver.dao.UserDao;
@@ -64,9 +63,14 @@ import com.zeroapp.utils.Log;
 public class Worker {
 
 	private MessageBox mBox = null;
+	private Connection conn= null;
 
-	public Worker(MessageBox box) {
-		mBox = box;
+	public Worker(MessageBox box,Connection connection) {
+		this.mBox = box;
+		if(conn == null){
+			System.out.println("is conn null? "+conn);
+		this.conn = connection;
+		}
 	}
 
 	public void deal(ClientServerMessage m) {
@@ -139,7 +143,7 @@ public class Worker {
 	 * 
 	 */
 	private void signIn(ClientServerMessage m) {
-		UserDao ud = new UserDao();
+		UserDao ud = new UserDao(conn);
 		User u = ContentToObj.getUser(m.getMessageContent());
 		Log.i(u.getAccount());
 		Log.i(u.getPassword());
@@ -152,6 +156,7 @@ public class Worker {
 			m.setMessageContent(content);
 			Log.i("back-->Content: " + content);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
@@ -166,7 +171,7 @@ public class Worker {
 	 * @param m
 	 */
 	private void signup(ClientServerMessage m) {
-		UserDao ud = new UserDao();
+		UserDao ud = new UserDao(conn);
 		User u = ContentToObj.getUser(m.getMessageContent());
 		if (ud.isAccountExist(u.getAccount()) != MessageConst.USER_CONSTANST.NOT_EXIST) {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
@@ -186,15 +191,17 @@ public class Worker {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 			m.setMessageContent("sqlexp");
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 
 	}
 
 	private void addCars(ClientServerMessage m) {
-		CarDao cd = new CarDao();
+		CarDao cd = new CarDao(conn);
 		String resString = cd.addCar(ContentToObj.getCarInfo(m
 				.getMessageContent()));
 		m.setMessageContent(resString);
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
@@ -209,7 +216,7 @@ public class Worker {
 	 * @param m
 	 */
 	private void listCars(ClientServerMessage m) {
-		CarDao d = new CarDao();
+		CarDao d = new CarDao(conn);
 		User u = ContentToObj.getUser(m.getMessageContent());
 		List<CarInfo> cars = d.getCars(u.getUserID());
 
@@ -225,6 +232,7 @@ public class Worker {
 					+ MessageConst.MessageResult.MSG_RESULT_FAIL);
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 
 	}
@@ -242,10 +250,10 @@ public class Worker {
 	private void listBiddings(ClientServerMessage m) {
 		if (m.getMessageContent().equals("qingdao")) {
 			ArrayList<BiddingContainer> biddingArrayList = new ArrayList<BiddingContainer>();
-			AreaDao areaDao = new AreaDao();
-			BusinessDao bd = new BusinessDao();
-			BiddingDao biddingDao = new BiddingDao();
-			CityDao cityDao = new CityDao();
+			AreaDao areaDao = new AreaDao(conn);
+			BusinessDao bd = new BusinessDao(conn);
+			BiddingDao biddingDao = new BiddingDao(conn);
+			CityDao cityDao = new CityDao(conn);
 			int cityId = cityDao.getCityId("qingdao");
 			ArrayList<CommercialDetails> bCommercialDetailsList = new ArrayList<CommercialDetails>();
 			ArrayList<Area> areaList = areaDao.areaIdArrayList(cityId);
@@ -284,6 +292,7 @@ public class Worker {
 		// MessageConst.MessageResult.MSG_RESULT_FAIL);
 		// m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		// }
+		closeConn(conn);
 		mBox.sendMessage(m);
 
 	}
@@ -298,7 +307,7 @@ public class Worker {
 	 * 
 	 */
 	private void listParingRecord(ClientServerMessage m) {
-		ParkingInfoDao pDao = new ParkingInfoDao();
+		ParkingInfoDao pDao = new ParkingInfoDao(conn);
 		ArrayList<ParkingInfo> parkingList = pDao.getParkingInfoDetails(
 				ContentToObj.getUser(m.getMessageContent()).getUserID(),
 				m.getMessageParameters());
@@ -308,17 +317,18 @@ public class Worker {
 		} else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	private void setParkingProfit(ClientServerMessage m) {
-		AreaDao ad = new AreaDao();
-		BiddingDao bd = new BiddingDao();
-		BusinessDao businessDao = new BusinessDao();
-		CarDao caD = new CarDao();
-		UserDao userD = new UserDao();
-		ParkingInfoDao pId = new ParkingInfoDao();
-		VotingDao votingDao = new VotingDao();
+		AreaDao ad = new AreaDao(conn);
+		BiddingDao bd = new BiddingDao(conn);
+		BusinessDao businessDao = new BusinessDao(conn);
+		CarDao caD = new CarDao(conn);
+		UserDao userD = new UserDao(conn);
+		ParkingInfoDao pId = new ParkingInfoDao(conn);
+		VotingDao votingDao = new VotingDao(conn);
 		int areaId = -1;
 		int biddingId;
 		ParkingInfo userBp = ContentToObj.getParkingInfo(m.getMessageContent());
@@ -388,16 +398,18 @@ public class Worker {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 			m.setMessageContent(MessageConst.AREA_CONSTANST.NO_THIS_AREA);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	public void createBid(ClientServerMessage m) {
-		BiddingDao bd = new BiddingDao();
+		BiddingDao bd = new BiddingDao(conn);
 		if (bd.createBid(ContentToObj.getBidding(m.getMessageContent()))) {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 		} else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
@@ -407,23 +419,23 @@ public class Worker {
 	// }
 	private void createVoting(ClientServerMessage m) {
 		// TODO 查询car state，更改cat state;
-		VotingDao vDao = new VotingDao();
+		VotingDao vDao = new VotingDao(conn);
 		int res = vDao.createVoting(ContentToObj.getVoting(m
 				.getMessageContent()));
 
 		m.setMessageResult(res);
-
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	private void getBusinessList(ClientServerMessage m) {
 		if (m.getMessageContent().equals("qingdao")) {
-			CityDao cityDao = new CityDao();
-			AreaDao areaDao = new AreaDao();
+			CityDao cityDao = new CityDao(conn);
+			AreaDao areaDao = new AreaDao(conn);
 			int cityId = cityDao.getCityId("qingdao");
 			ArrayList<CommercialDetails> bCommercialDetailsList = new ArrayList<CommercialDetails>();
 			ArrayList<Area> areaList = areaDao.areaIdArrayList(cityId);
-			BusinessDao bd = new BusinessDao();
+			BusinessDao bd = new BusinessDao(conn);
 			for (Area area : areaList) {
 				CommercialDetails bCommercialDetails = bd
 						.getAvailableBusinessForClients(area);
@@ -434,11 +446,12 @@ public class Worker {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 			m.setMessageContent(ObjToContent.getContent(bCommercialDetailsList));
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	private void biddingsCreatedByCom(ClientServerMessage m) {
-		BiddingDao bd = new BiddingDao();
+		BiddingDao bd = new BiddingDao(conn);
 		boolean resBoolean = bd.createBid(ContentToObj.getBidding(m
 				.getMessageContent()));
 		if (resBoolean) {
@@ -446,11 +459,12 @@ public class Worker {
 		} else {
 			m.setMessageType(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	private void getUserInfoForAdmin(ClientServerMessage m) {
-		UserDao ud = new UserDao();
+		UserDao ud = new UserDao(conn);
 		User user = new User();
 		user = ud.getUserInfoByPhoneNum(ContentToObj.getUser(
 				m.getMessageContent()).getPhoneNum());
@@ -460,25 +474,27 @@ public class Worker {
 		} else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	private void updateUserCarState(ClientServerMessage m) {
 		CarInfo carIn = ContentToObj.getCarInfo(m.getMessageContent());
-		CarDao ca = new CarDao();
+		CarDao ca = new CarDao(conn);
 		int res = ca.changeCarState(carIn.getCarNum(), carIn.getCarState());
 		if (res > 0) {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
 		} else {
 			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
 		}
+		closeConn(conn);
 		mBox.sendMessage(m);
 	}
 
 	private void listCostForMoneyLord(ClientServerMessage m) {
-		VotingDao votingdao = new VotingDao();
-		ParkingInfoDao parkingInfoDao = new ParkingInfoDao();
-		BiddingDao biddingDao = new BiddingDao();
+		VotingDao votingdao = new VotingDao(conn);
+		ParkingInfoDao parkingInfoDao = new ParkingInfoDao(conn);
+		BiddingDao biddingDao = new BiddingDao(conn);
 		User u = ContentToObj.getUser(m.getMessageContent());
 		ArrayList<Bidding> biddingList = biddingDao.getUserBiddings(u
 				.getUserID());
@@ -506,7 +522,7 @@ public class Worker {
 	}
 
 	private void updateUserInfoByAdmin(ClientServerMessage m) {
-		UserDao ud = new UserDao();
+		UserDao ud = new UserDao(conn);
 		int rsInt = ud.updateUserItems(ContentToObj.getUser(m
 				.getMessageContent()));
 		m.setMessageResult(rsInt);
@@ -515,6 +531,15 @@ public class Worker {
 		} else {
 			m.setMessageContent(MessageConst.MessageResult.SQL_OPREATION_EXCEPTION_STRING);
 		}
+		closeConn(conn);
+		mBox.sendMessage(m);
 	}
-
+	private void closeConn(Connection conn){
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

@@ -8,16 +8,21 @@ import java.util.ArrayList;
 
 import com.zeroapp.parking.message.MessageConst;
 import com.zeroapp.parkingserver.common.Area;
-import com.zeroapp.tools.BmapPoint;
 
 
 public class AreaDao {
+	private Connection conn;
+	public AreaDao(Connection connection){
+		this.conn = connection;
+	}
     
     public ArrayList<Area> areaDetailsArrayList(int citycode){
     		ArrayList<Area> al = new ArrayList<Area>();
     	try {
             String sql = "select * from parking.areas_details where city=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//            if(conn == null){
+//			conn = DBUtil.getDBUtil().getConnection();
+//            }
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1,citycode );
 			ResultSet rs = ps.executeQuery();
@@ -34,7 +39,9 @@ public class AreaDao {
     }
 	public String getAreaName(int areaId){
 		String sql = "select area from parking.areas_details where Id_p=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+        if(conn == null){
+//		conn = DBUtil.getDBUtil().getConnection();
+        }
 		PreparedStatement ps;
 		try {
 			ps = conn.prepareStatement(sql);
@@ -54,8 +61,10 @@ public class AreaDao {
 	}
 	public String getAreaCoordinates(int areaId){
 			String sql = "select coordinates from parking.areas_details where city=?";
-			try {     
-			Connection conn = DBUtil.getDBUtil().getConnection();
+			try {
+	            if(conn == null){
+//	    			conn = DBUtil.getDBUtil().getConnection();
+	                }
 			PreparedStatement ps;
 			ps = conn.prepareCall(sql);
 				ps.setInt(1, areaId);
@@ -74,7 +83,9 @@ public class AreaDao {
 	} 
 	public Area getAreaDetails(int areaId){
 		String sql = "select * from parking.areas_details where Id_p=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+        if(conn == null){
+//		conn = DBUtil.getDBUtil().getConnection();
+        }
 		PreparedStatement ps;
 		Area aa =  new Area();
 		try {
@@ -98,7 +109,9 @@ public class AreaDao {
 	}
 	public void createArea(Area a){
 		String sql = "insert into parking.areas_details values(null,?,?,?)";
-		Connection conn =  DBUtil.getDBUtil().getConnection();
+        if(conn == null){
+//		conn = DBUtil.getDBUtil().getConnection();
+        }
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, a.getCityId());
@@ -115,8 +128,10 @@ public class AreaDao {
 		ArrayList<Area> areaList = new ArrayList<Area>();
 	try {
         String sql = "select * from parking.areas_details where city=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
-		PreparedStatement ps = conn.prepareStatement(sql);
+        if(conn == null){
+//		conn = DBUtil.getDBUtil().getConnection();
+        }
+        PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setInt(1,citycode );
 		ResultSet rs = ps.executeQuery();
 		if (rs != null) {

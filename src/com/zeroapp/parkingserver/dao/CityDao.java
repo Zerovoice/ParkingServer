@@ -1,18 +1,22 @@
 package com.zeroapp.parkingserver.dao;
 
-import io.netty.handler.codec.http.HttpContentEncoder.Result;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
 import com.zeroapp.parking.message.MessageConst;
 
 public class CityDao {
+	private Connection conn;
+	public CityDao(Connection connection){
+		this.conn = connection;
+	}
 public String getCityName(int cityid){
 	String sql = "select name from parking.city where id=?";
-	Connection conn = DBUtil.getDBUtil().getConnection();
+//	Connection conn = DBUtil.getDBUtil().getConnection();
 	PreparedStatement ps;
 	try {
 		ps = conn.prepareStatement(sql);
@@ -32,7 +36,7 @@ public int getCityId(String city) {
 
 	try {
         String sql = "select id,name,countrycode,district from world.city where name=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		PreparedStatement ps = conn.prepareStatement(sql);
 		ps.setString(1, city);
 		ResultSet rs = ps.executeQuery();

@@ -1,7 +1,5 @@
 package com.zeroapp.parkingserver.dao;
 
-import java.awt.image.DataBuffer;
-import java.security.interfaces.RSAKey;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +10,13 @@ import com.zeroapp.parkingserver.common.User;
 import com.zeroapp.utils.Config;
 
 public class UserDao {
-
+	
+	
+	private Connection conn;
+	public UserDao(Connection connection){
+		this.conn = connection;
+	}
+	
 	/**
 	 * <p>
 	 * Title: signIn.
@@ -28,7 +32,7 @@ public class UserDao {
 
 		try {
 			String sql = "select * from user_info where Account=? and Password=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, u.getAccount());
 			ps.setString(2, u.getPassword());
@@ -48,7 +52,7 @@ public class UserDao {
 			// String sql =
 			// "insert into user_info(Account,Password,Name,IdentityNum,Sex,PhoneNum,UserType,AccountBanlance) values(?,?,?,?,?,?,?,?)";
 			String sql = "insert into user_info values(null,?,?,?,?,?,?,?,?)";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, u.getAccount());
 			ps.setString(2, u.getPassword());
@@ -83,7 +87,7 @@ public class UserDao {
 		User res = new User();
 		try {
 			String sql = "select * from user_info where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, account);
 			ResultSet rs = ps.executeQuery();
@@ -108,7 +112,7 @@ public class UserDao {
 		User res = new User();
 		try {
 			String sql = "select * from user_info where phoneNum=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, pNum);
 			ResultSet rs = ps.executeQuery();
@@ -144,7 +148,7 @@ public class UserDao {
 	public boolean changepassWord(String account, String newPassword) {
 		try {
 			String sql = "update user_info set Password=? where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, newPassword);
 			ps.setString(2, account);
@@ -161,7 +165,7 @@ public class UserDao {
 	public boolean changePhoneNumber(String account, String newPhoneNumber) {
 		try {
 			String sql = "update user_info set PhoneNum=? where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, newPhoneNumber);
 			ps.setString(2, account);
@@ -178,7 +182,7 @@ public class UserDao {
 	public boolean changeName(String account, String newName) {
 		try {
 			String sql = "update user_info set Name=? where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, newName);
 			ps.setString(2, account);
@@ -195,7 +199,7 @@ public class UserDao {
 	public boolean changeIdentityNumber(String account, String newIdentityNumber) {
 		try {
 			String sql = "update user_info set IdentityNum=? where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, newIdentityNumber);
 			ps.setString(2, account);
@@ -212,7 +216,7 @@ public class UserDao {
 	public boolean changeSex(String account, String sex) {
 		try {
 			String sql = "update user_info set Sex=? where Account=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			if (sex.equals("男")) {// TODO
 				ps.setInt(1, 1);
@@ -250,7 +254,7 @@ public class UserDao {
 	private boolean delBuddy(int myAccount, int dfAccount) {
 		try {
 			String sql = "delete  from Action_buddy where BUDDY_ACCOUNT=? and BUDDY_BUDDY=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, myAccount);
 			ps.setInt(2, dfAccount);
@@ -267,7 +271,7 @@ public class UserDao {
 	private boolean addBuddy(int sender, int receiver) {
 		try {
 			String sql = "insert into Action_Buddy values(null,?,?)";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, sender);
 			ps.setInt(2, receiver);
@@ -286,7 +290,7 @@ public class UserDao {
 		try {
 			String sql = "select * from Action_buddy where BUDDY_ACCOUNT="
 					+ account;
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -315,7 +319,7 @@ public class UserDao {
 	private boolean updateAvatar(int account, String filePath) {
 		try {
 			String sql = "update Action_user set USER_AVATAR=? where USER_ACCOUNT=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			System.out.println("local filepath [" + filePath + "]");
 			String s = "D:\\Develop\\apache-tomcat-6.0.35\\webapps\\ActionServer\\userdata\\";
@@ -341,7 +345,7 @@ public class UserDao {
 			int tag = 1;
 			String sql = "select USER_TAG from Action_user where USER_ACCOUNT="
 					+ account;
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
@@ -366,7 +370,7 @@ public class UserDao {
 	public int isAccountExist(String accountname) {
 		String sql = "select account from parking.user_info where account=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, accountname);
 			ResultSet res = ps.executeQuery();
@@ -385,7 +389,7 @@ public class UserDao {
 	public String getUserBanlance(int userId) {
 		String sql = "select AccountBanlance from parking.user_info where userid=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ResultSet res = ps.executeQuery();
@@ -403,7 +407,7 @@ public class UserDao {
 	public int setUserBanlance(double profit,int userid){
 		String sql = "update parking.user_info set accountbanlance=accountbanlance+"+profit+" where userid=?";
 		try {
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		PreparedStatement ps =  conn.prepareStatement(sql);
 		ps.setInt(1, userid);
 		int res =ps.executeUpdate();
@@ -421,7 +425,7 @@ public class UserDao {
 	public User getUserInfosFormUserId(int userid){
 		String sql = "select * from parking.user_info where userid=?";
 		User u =  new User();
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userid);
@@ -439,7 +443,7 @@ public class UserDao {
 		}
 	}
 	public int updateUserAccountItem(double profit, int userid) {
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		String sql;
 		try {
 			if (profit == -1) {
@@ -462,7 +466,7 @@ public class UserDao {
 	}
 	public int updateUserItems(User u) {
 		String sql = "UPDATE `parking`.`user_info` SET `Account`=?, `Password`=?, `Name`=?, `Sex`=?, `PhoneNum`=?, `UserType`=?, `AccountBanlance`=? WHERE `UserID`='2'";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int resInt = ps.executeUpdate();

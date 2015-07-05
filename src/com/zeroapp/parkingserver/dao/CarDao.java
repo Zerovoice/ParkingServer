@@ -36,7 +36,10 @@ import com.zeroapp.parkingserver.common.CarInfo;
  */
 
 public class CarDao {
-
+	private Connection conn;
+	public CarDao(Connection connection){
+		this.conn = connection;
+	}
 	/**
 	 * <p>
 	 * Title: getCars.
@@ -52,7 +55,7 @@ public class CarDao {
 		List<CarInfo> res = new ArrayList<>();
 		try {
 			String sql = "select * from car_info where UserID=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userID);
 			ResultSet rs = ps.executeQuery();
@@ -87,7 +90,7 @@ public class CarDao {
 	public String addCar(CarInfo car) {
 		try {
 			String sql = "insert into car_info (carnum,userid) values(?,?,?,?,?,?,?)";// TODO
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, car.getCarNum());
 			ps.setInt(2, car.getUserID());
@@ -110,7 +113,7 @@ public class CarDao {
 	public int changeCarState(String carNum, String newState) {
 		try {
 			String sql = "update car_info set newState=? where CarNum=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, newState);
 			ps.setString(2, carNum);
@@ -127,7 +130,7 @@ public class CarDao {
 
 	public int getCarBidding(String carN){
 		String sql = "select bidding from parking.car_info where carnum=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		int biddingId = -1; 
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -148,7 +151,7 @@ public class CarDao {
 	public boolean vote(String carNum, String BiddingID) {
 		try {
 			String sql = "update car_info set BiddingID=? where CarNum=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, BiddingID);
 			ps.setString(2, carNum);

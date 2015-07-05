@@ -43,7 +43,10 @@ import com.zeroapp.tools.CalculateTimeUtils;
  */
 
 public class BiddingDao {
-
+		private Connection conn;
+		public BiddingDao(Connection connection){
+			this.conn = connection;
+		}
 	/**
 	 * <p>
 	 * Title: getAvailableBusiness.
@@ -59,7 +62,7 @@ public class BiddingDao {
 		List<Integer> res = new ArrayList<Integer>();
 		try {
 			String sql = "select * from bidding";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {// TODO 数据类型需要修改
@@ -77,7 +80,7 @@ public class BiddingDao {
 	public boolean createBid(Bidding b) {
 		try {
 			String sql = "insert into parking.bidding(businessid,userid,timestart,timeend) values(?,?,?,?)";// TODO
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, b.getBusinessID());
 			ps.setInt(2, b.getUserID());
@@ -98,7 +101,7 @@ public class BiddingDao {
 		ArrayList<Bidding> biddingArrayList = new ArrayList<Bidding>();
 		String sql = "select * from parking.bidding where userid=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ResultSet res = ps.executeQuery();
@@ -132,7 +135,7 @@ public class BiddingDao {
 	public int getBusinessIdFromBidding(int biddingid) {
 		String sql = "select businessid from parking.bidding where biddingid=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps;
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, biddingid);
@@ -153,7 +156,7 @@ public class BiddingDao {
 	public Bidding getBiddingDetailsFormBiddingId(int biddingid){
 		Bidding bding =  new Bidding();
 		String sql = "select * from parking.bidding where biddingid=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		PreparedStatement ps;
 		try {
 			ps = conn.prepareStatement(sql);
@@ -176,7 +179,7 @@ public class BiddingDao {
 	}
 	public BiddingContainer getBiddingDetailsFormBusiness(CommercialDetails b){
 		BiddingContainer bding =  new BiddingContainer();
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		String sql = "select * from parking.bidding where businessid=?";
 		PreparedStatement ps;
 		
@@ -210,11 +213,11 @@ public class BiddingDao {
 	}
 	public ArrayList<BiddingContainer> getBiddingContainerListFormUserId(User u){
 		ArrayList<BiddingContainer> biddingContainersList = new ArrayList<BiddingContainer>();
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		ArrayList<Bidding> biddingList;
 		ArrayList<Business> businesList =  new ArrayList<Business>();
-		BusinessDao businessDao = new BusinessDao();
-		AreaDao areaDao =  new AreaDao();
+		BusinessDao businessDao = new BusinessDao(conn);
+		AreaDao areaDao =  new AreaDao(conn);
 		PreparedStatement ps;
 		String sqlAreaId = "select areaid from parking.business where businessid=?";
 		String sqlAreaName = "select area from parking.business where areaid=?";

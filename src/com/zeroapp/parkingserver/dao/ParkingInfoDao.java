@@ -15,12 +15,16 @@ import com.zeroapp.tools.CalculateTimeUtils;
 import com.zeroapp.tools.Tool;
 
 public class ParkingInfoDao {
+	private Connection conn;
+	public ParkingInfoDao(Connection connection){
+		this.conn = connection;
+	}
 	public int creatParkingInfo(String carNum, double longitude,
 			double latitude, String timeStart, String timeEnd,
 			double moneyEarning, double moneyCost, int userId) {
 		String sql = "insert into parking.parking_info values(null,?,?,?,?,?,?,?,?)";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, carNum);
 			ps.setDouble(2, longitude);
@@ -46,12 +50,16 @@ public class ParkingInfoDao {
 	public ArrayList<ParkingInfo> getParkingInfoDetails(int userId,String range){
 		ArrayList<ParkingInfo> paArrayList =  new ArrayList<ParkingInfo>();
 		String sql = "select * from parking.parking_info where userid=? limit ?,?";
-		int intRange[] = Tool.getIntRangeFromString(range);
-		if(intRange == null){
-			sql = "select * from parking.parking_info where userid=?";
+		int intRange[];
+		if(range!=null){
+			intRange = Tool.getIntRangeFromString(range);
+		}else{
+			intRange = new int[2];
+			intRange[0] = 0;
+			intRange[1] = 5;
 		}
 		try {
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, userId);
 			ps.setInt(2, intRange[0]);

@@ -18,6 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import com.zeroapp.parking.message.ClientServerMessage;
+import com.zeroapp.parkingserver.dao.DBCPBean;
 import com.zeroapp.parkingserver.factory.Worker;
 import com.zeroapp.utils.Log;
 
@@ -37,6 +38,7 @@ import com.zeroapp.utils.Log;
 public class MessageBox extends ChannelInboundHandlerAdapter {
 
     private ChannelHandlerContext mctx;
+    private DBCPBean dbcpBean = new DBCPBean();
 
     public MessageBox() {
 //        new MessagePool(MessageBox.this).startLooping();
@@ -60,7 +62,7 @@ public class MessageBox extends ChannelInboundHandlerAdapter {
         if (msg != null) {
             ClientServerMessage m = (ClientServerMessage) msg;
             Log.i("" + m.getMessageContent());
-            Worker w = new Worker(MessageBox.this);
+            Worker w = new Worker(MessageBox.this,dbcpBean.getConn());
             w.deal(m);
         } else {
             Log.w("null");

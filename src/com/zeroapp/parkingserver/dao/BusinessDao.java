@@ -41,13 +41,16 @@ import com.zeroapp.utils.Log;
  */
 
 public class BusinessDao {
-
+	private Connection conn;
+	public BusinessDao(Connection connection){
+		this.conn = connection;
+	}
 	public int createBusiness(String area, int maxuser, int maxtenderer,
 			double cost, double earnings, String timestart, String timeend,
 			int areaid) {
 		String sql = "insert into business(MaxUserCount,MaxTendererCount,Cost,Earnings,TimeStart,TimeEnd,areaid) values(?,?,?,?,?,?,?)";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps;
 			ps = conn.prepareStatement(sql);
 
@@ -73,7 +76,7 @@ public class BusinessDao {
 	public int removeBusiness(int businessid) {
 		String sql = "delete from parking.business where businessid=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, businessid);
 			int rs = ps.executeUpdate();
@@ -92,7 +95,7 @@ public class BusinessDao {
 
 		String sql = "select * from parking.business where businessid=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, businessid);
 			ResultSet res = ps.executeQuery();
@@ -121,7 +124,7 @@ public class BusinessDao {
 	public int getBusinessAreaId(int businessid) {
 		String sql = "select areaid from parking.business where businessid=?";
 		try {
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps;
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, businessid);
@@ -141,7 +144,7 @@ public class BusinessDao {
 	}
 
 	public int updateBusinessCostItem(double userProfit, int businessId) {
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		String sql;
 		try {
 			if (userProfit == -1) {
@@ -165,7 +168,7 @@ public class BusinessDao {
 		try {
 			CommercialDetails b = new CommercialDetails();
 			String sql = "select * from parking.business where areaid=?";
-			Connection conn = DBUtil.getDBUtil().getConnection();
+//			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, area.getAreaId());
 			ResultSet rs = ps.executeQuery();
