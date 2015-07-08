@@ -87,4 +87,34 @@ public class ParkingInfoDao {
 			return null;
 		}
 	}
+	public ArrayList<ParkingInfo> getParkingInfoDetails(String carN){
+		ArrayList<ParkingInfo> paArrayList =  new ArrayList<ParkingInfo>();
+		String sql = "select * from parking.parking_info where carnum=?";
+		int intRange[];
+		try {
+		PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, carN);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+					ParkingInfo paInfo = new ParkingInfo();
+					paInfo.setCarNum(res.getString("carnum"));
+					paInfo.setLocationLatitude(res.getDouble("locationLatitude"));
+					paInfo.setLocationLongitude(res.getDouble("locationLongitude"));
+					paInfo.setMoneyCost(res.getDouble("MoneyCost"));
+					paInfo.setMoneyEarning(res.getDouble("MoneyEarning"));
+					paInfo.setParkingID(res.getInt("parkingID"));
+					paInfo.setTimeEnd(CalculateTimeUtils.convert2long(res.getString("timeEnd")));
+					paInfo.setTimeStart(CalculateTimeUtils.convert2long(res.getString("timeStart")));
+					paArrayList.add(paInfo);
+				}
+				return paArrayList;
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

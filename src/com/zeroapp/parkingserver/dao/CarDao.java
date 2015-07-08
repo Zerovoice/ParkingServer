@@ -89,7 +89,7 @@ public class CarDao {
 	 */
 	public String addCar(CarInfo car) {
 		try {
-			String sql = "insert into car_info (carnum,userid) values(?,?,?,?,?,?,?)";// TODO
+			String sql = "insert into car_info values(?,?,?,?,?,?,?)";// TODO
 //			Connection conn = DBUtil.getDBUtil().getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, car.getCarNum());

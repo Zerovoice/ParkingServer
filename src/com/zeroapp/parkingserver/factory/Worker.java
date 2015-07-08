@@ -125,7 +125,7 @@ public class Worker {
 			updateUserCarState(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_COMPANY_LIST_COST:
-
+			listCostForMoneyLord(m);
 			break;
 		case MessageConst.MessageType.MSG_TYPE_COMPANY_LIST_MY_BIDDING:
 		default:
@@ -498,9 +498,10 @@ public class Worker {
 		User u = ContentToObj.getUser(m.getMessageContent());
 		ArrayList<Bidding> biddingList = biddingDao.getUserBiddings(u
 				.getUserID());
-		ArrayList<String> carNumArrayList = new ArrayList<String>();
+		ArrayList<ParkingInfo> parkingInfoList = new ArrayList<ParkingInfo>();
+//		ArrayList<String> carNumArrayList = new ArrayList<String>();
 		String sql = "select carnum from parking.voting where biddingid=?";
-		Connection conn = DBUtil.getDBUtil().getConnection();
+//		Connection conn = DBUtil.getDBUtil().getConnection();
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			if (biddingList != null) {
@@ -509,16 +510,31 @@ public class Worker {
 					ResultSet rs = ps.executeQuery();
 					if (rs != null) {
 						while (rs.next()) {
-
+							ArrayList<ParkingInfo> pList = new ArrayList<ParkingInfo>();
+							String carN = votingdao.getVoting(b.getBiddingID()).getCarNum();
+							if(carN == null){
+								m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+								m.setMessageContent(MessageConst.SQL_CONSTANST.SQL_EXP);
+							}
+							pList = parkingInfoDao.getParkingInfoDetails(carN);
+							parkingInfoList.addAll(pList);
 						}
 					}
 				}
 
 			}
+			m.setMessageContent(ObjToContent.getContent(parkingInfoList));
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_FAIL);
+			m.setMessageContent(MessageConst.SQL_CONSTANST.SQL_EXP);
 			e.printStackTrace();
 		}
+		if(parkingInfoList.size()>0){
+			m.setMessageResult(MessageConst.MessageResult.MSG_RESULT_SUCCESS);
+		}
+		closeConn(conn);
+		mBox.sendMessage(m);
 	}
 
 	private void updateUserInfoByAdmin(ClientServerMessage m) {
@@ -536,9 +552,15 @@ public class Worker {
 	}
 	private void closeConn(Connection conn){
 		try {
+			conn.commit();
 			conn.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 	}

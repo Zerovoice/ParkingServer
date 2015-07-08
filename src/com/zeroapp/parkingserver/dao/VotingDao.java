@@ -58,6 +58,31 @@ public class VotingDao {
 			return null;
 		}
 	}
+	public Voting getVoting(int biddingid){
+
+		String sql = "select * from parking.voting where biddingid=?";
+		Voting voting = new Voting();
+		try {
+//		Connection conn =  DBUtil.getDBUtil().getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, biddingid);
+			ResultSet res = ps.executeQuery();
+			if(res!=null){
+				while(res.next()){
+					voting.setBiddingID(biddingid);
+					voting.setCarNum(res.getString("carnum"));
+					voting.setState(res.getString("state"));
+					voting.setVotingID(res.getInt("votingID"));
+				}
+				return voting;
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	
+	}
 	public int createVoting(Voting v){
 		String sql = "insert into parking.voting values(null,?,?,?)";
 		try {
